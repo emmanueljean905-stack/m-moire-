@@ -1,0 +1,318 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Panier - Beautiful Women</title>
+    <link rel="stylesheet" href="css/style.css?v=2.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" /></noscript>
+    <style>
+        .cart-page-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 30px;
+            padding: 40px 0;
+        }
+
+        .cart-items {
+            background: var(--blanc);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 100px 1fr 120px 150px 40px;
+            align-items: center;
+            gap: 20px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--creme-d);
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item-img {
+            width: 100px;
+            height: 100px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            background: var(--creme);
+        }
+
+        .cart-item-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cart-item-info h4 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: var(--brun);
+        }
+
+        .cart-item-info p {
+            font-size: 0.85rem;
+            color: var(--gris);
+        }
+
+        .cart-item-price {
+            font-weight: 700;
+            color: var(--orange);
+        }
+
+        .cart-summary {
+            background: var(--brun);
+            color: var(--blanc);
+            padding: 30px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            height: sticky;
+            top: 100px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        .summary-total {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--or);
+        }
+
+        .checkout-section {
+            margin-top: 30px;
+        }
+
+        .checkout-section h3 {
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            color: var(--brun);
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .payment-method {
+            border: 2px solid var(--creme-d);
+            border-radius: var(--radius);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--blanc);
+        }
+
+        .payment-method.active {
+            border-color: var(--orange);
+            background: var(--creme);
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            background: var(--creme);
+            border-radius: 30px;
+            padding: 5px;
+            border: 1px solid var(--creme-d);
+        }
+
+        .quantity-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: var(--blanc);
+            color: var(--brun);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .quantity-btn:hover {
+            background: var(--orange);
+            color: var(--blanc);
+            transform: scale(1.1);
+        }
+
+        .quantity-input {
+            width: 40px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            font-weight: 700;
+            color: var(--brun);
+            font-size: 1rem;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
+        }
+
+        .quantity-input::-webkit-outer-spin-button,
+        .quantity-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .payment-method img {
+            height: 50px;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+            transition: var(--transition);
+        }
+
+        .payment-method:hover img {
+            transform: scale(1.1);
+        }
+
+        .payment-method.active {
+            border-color: var(--orange);
+            background: rgba(232, 119, 34, 0.05);
+            box-shadow: 0 5px 15px rgba(232, 119, 34, 0.1);
+        }
+
+        .input-with-icon input {
+            padding-left: 45px !important;
+            border-radius: 12px;
+            border: 2px solid var(--creme-d);
+            transition: var(--transition);
+        }
+
+        .input-with-icon input:focus {
+            border-color: var(--orange);
+            box-shadow: 0 0 0 4px rgba(232, 119, 34, 0.1);
+        }
+
+        .input-with-icon i {
+            color: var(--orange);
+            font-size: 1.2rem;
+            left: 15px;
+        }
+
+        /* --- Delivery Map Styles --- */
+        #delivery-map-container {
+            margin-top: 20px;
+            display: none; /* Hidden by default */
+            animation: fadeInDown 0.4s ease-out;
+        }
+
+        #delivery-map {
+            height: 300px;
+            width: 100%;
+            border-radius: 15px;
+            border: 2px solid var(--creme-d);
+            box-shadow: var(--shadow);
+            z-index: 10;
+        }
+
+        .map-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-locate {
+            background: var(--brun);
+            color: var(--blanc);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-locate:hover {
+            background: var(--orange);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 992px) {
+            .cart-page-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+        <a href="index.html" class="navbar-logo">Beautiful <span>Women</span></a>
+        <ul class="navbar-menu">
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="catalogue.html">Catalogue</a></li>
+        </ul>
+        <div class="navbar-actions">
+            <div id="nav-auth" style="display:flex; gap:8px; align-items:center; flex-shrink:0;">
+                <a href="auth.html" class="btn btn-primary" style="padding:7px 12px; font-size:0.75rem; white-space:nowrap;">Se connecter</a>
+                <a href="auth.html?mode=register" class="btn btn-outline" style="padding:7px 12px; font-size:0.75rem; color:var(--orange); border-color:var(--orange); white-space:nowrap;">S'inscrire</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div id="cart-container" class="cart-page-grid">
+        <!-- Content loaded by JS -->
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-bottom">
+            <span>© 2026 Beautiful Women – Tous droits réservés</span>
+            <span>Fait avec ❤️ à Abidjan</span>
+        </div>
+    </div>
+</footer>
+
+<div id="toast-container"></div>
+
+<script src="https://checkout.cinetpay.com/sdk/v1/cinetpay.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="js/api.js"></script>
+<script src="js/panier.js"></script>
+<script src="js/ui.js?v=2.1"></script>
+<script src="js/panier-page.js"></script>
+
+<script src="js/chatbot.js"></script>
+</body>
+</html>
+

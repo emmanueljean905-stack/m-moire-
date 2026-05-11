@@ -1,0 +1,259 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Catalogue - Beautiful Women</title>
+    <link rel="stylesheet" href="css/style.css?v=2.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" /></noscript>
+    <style>
+        /* Styles spécifiques au catalogue */
+        .catalogue-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+            padding: 40px 0;
+        }
+
+        .filters-sidebar {
+            background: var(--blanc);
+            padding: 25px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            height: sticky;
+            top: 100px;
+        }
+
+        .filter-group {
+            margin-bottom: 25px;
+        }
+
+        .filter-group h4 {
+            margin-bottom: 15px;
+            font-size: 1rem;
+            color: var(--brun);
+            border-bottom: 2px solid var(--creme-d);
+            padding-bottom: 8px;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-option:hover {
+            color: var(--orange);
+        }
+
+        .filter-option input {
+            accent-color: var(--orange);
+            width: 18px;
+            height: 18px;
+        }
+
+        .price-inputs {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .price-inputs input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--creme-d);
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .catalogue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: var(--blanc);
+            padding: 15px 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .sort-select {
+            padding: 8px 15px;
+            border: 1px solid var(--creme-d);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 40px;
+        }
+
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--blanc);
+            border: 1px solid var(--creme-d);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .page-btn.active {
+            background: var(--orange);
+            color: var(--blanc);
+            border-color: var(--orange);
+        }
+
+        .page-btn:hover:not(.active) {
+            background: var(--creme);
+            border-color: var(--orange);
+        }
+
+        @media (max-width: 992px) {
+            .catalogue-layout {
+                grid-template-columns: 1fr;
+            }
+            .filters-sidebar {
+                display: none; /* Mobile filter modal structure would be better here */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a href="index.html" class="navbar-logo">Beautiful <span>Women</span></a>
+        <ul class="navbar-menu">
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="catalogue.html" class="active">Catalogue</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="modeles.html">Modèles</a></li>
+            <li><a href="index.html#vendeurs">Vendeurs</a></li>
+            <li><a href="index.html#categories">Catégories</a></li>
+        </ul>
+        <div class="navbar-search">
+            <button onclick="lancerRecherche()"><i class="fas fa-search"></i></button>
+            <input type="text" id="search-input" placeholder="Rechercher..." />
+        </div>
+        <div class="navbar-actions">
+            <button class="nav-icon-btn"><i class="far fa-heart"></i></button>
+            <button class="nav-icon-btn" onclick="window.location='panier.html'">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="badge" id="badge-panier">0</span>
+            </button>
+            <div id="nav-auth" style="display:flex; gap:8px; align-items:center; flex-shrink:0;">
+                <a href="auth.html" class="btn btn-primary" style="padding:7px 12px; font-size:0.75rem; white-space:nowrap;">Se connecter</a>
+                <a href="auth.html?mode=register" class="btn btn-outline" style="padding:7px 12px; font-size:0.75rem; color:var(--orange); border-color:var(--orange); white-space:nowrap;">S'inscrire</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="catalogue-layout">
+        <!-- Sidebar Filtres -->
+        <aside class="filters-sidebar">
+            <div class="filter-group">
+                <h4>Catégories</h4>
+                <div class="filter-options" id="filter-categories">
+                    <!-- Chargé par JS -->
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <h4>Prix (FCFA)</h4>
+                <div class="price-inputs">
+                    <input type="number" id="price-min" placeholder="Min" />
+                    <span>-</span>
+                    <input type="number" id="price-max" placeholder="Max" />
+                </div>
+                <button class="btn btn-vert" style="width:100%; margin-top:15px; padding:8px;" onclick="appliquerFiltres()">
+                    Filtrer
+                </button>
+            </div>
+
+            <div class="filter-group">
+                <h4>Vendeurs</h4>
+                <div class="filter-options" id="filter-vendeurs">
+                    <!-- Chargé par JS -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- Liste Produits -->
+        <main>
+            <header class="catalogue-header">
+                <div id="results-count">Chargement des produits...</div>
+                <div class="sort-group">
+                    <label style="font-size: 0.85rem; color: var(--gris);">Trier par :</label>
+                    <select class="sort-select" id="sort-by" onchange="appliquerFiltres()">
+                        <option value="recent">Nouveautés</option>
+                        <option value="populaire">Plus populaires</option>
+                        <option value="prix_asc">Prix croissant</option>
+                        <option value="prix_desc">Prix décroissant</option>
+                    </select>
+                </div>
+            </header>
+
+            <div class="produits-grid" id="catalogue-grid">
+                <!-- Skeletons -->
+                <div class="produit-card skeleton" style="height:350px"></div>
+                <div class="produit-card skeleton" style="height:350px"></div>
+                <div class="produit-card skeleton" style="height:350px"></div>
+                <div class="produit-card skeleton" style="height:350px"></div>
+                <div class="produit-card skeleton" style="height:350px"></div>
+                <div class="produit-card skeleton" style="height:350px"></div>
+            </div>
+
+            <div class="pagination" id="pagination">
+                <!-- Chargé par JS -->
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer class="footer">
+    <!-- Footer content reused from index.html -->
+    <div class="container">
+        <div class="footer-bottom">
+            <span>© 2026 Beautiful Women – Tous droits réservés</span>
+            <span>Fait avec ❤️ à Abidjan</span>
+        </div>
+    </div>
+</footer>
+
+<div id="toast-container"></div>
+
+<script src="js/api.js?v=1.4"></script>
+<script src="js/panier.js?v=1.4"></script>
+<script src="js/ui.js?v=2.1"></script>
+<script src="js/catalogue.js?v=1.4"></script>
+<script src="js/chatbot.js"></script>
+</body>
+</html>
+

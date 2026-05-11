@@ -1,0 +1,335 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commande Confirmée - Beautiful Women</title>
+    <link rel="stylesheet" href="css/style.css?v=2.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        .confirmation-page {
+            min-height: 80vh;
+            padding: 40px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .confirmation-layout {
+            display: grid;
+            grid-template-columns: 1fr 450px;
+            gap: 30px;
+            width: 100%;
+            max-width: 1100px;
+            background: var(--blanc);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Côté Gauche : Carte et Succès */
+        .confirmation-main {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .success-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .success-icon {
+            width: 70px;
+            height: 70px;
+            background: #d4edda;
+            color: var(--vert);
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+        }
+
+        #confirmation-map {
+            height: 400px;
+            width: 100%;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .map-status-overlay {
+            background: rgba(255,255,255,0.9);
+            padding: 12px 20px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--brun);
+            margin-top: -60px;
+            position: relative;
+            z-index: 2000;
+            width: fit-content;
+            margin-left: 20px;
+            border-left: 4px solid var(--vert);
+        }
+
+        /* Côté Droit : Détails Commande */
+        .confirmation-details {
+            background: var(--creme);
+            padding: 40px;
+            border-left: 1px solid var(--creme-d);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .order-summary-card {
+            background: var(--blanc);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .item-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--creme-d);
+        }
+
+        .item-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+        .item-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .price-total {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid var(--creme-d);
+            font-size: 1.2rem;
+            font-weight: 800;
+            display: flex;
+            justify-content: space-between;
+            color: var(--brun);
+        }
+
+        @media (max-width: 900px) {
+            .confirmation-layout { grid-template-columns: 1fr; }
+            .confirmation-details { border-left: none; border-top: 1px solid var(--creme-d); }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a href="index.html" class="navbar-logo">Beautiful <span>Women</span></a>
+        <div class="navbar-actions">
+            <a href="profil.html" class="btn btn-outline" style="padding: 8px 15px; font-size: 0.8rem;">Mon Profil</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container confirmation-page">
+    <div class="confirmation-layout">
+        <!-- Zone Gauche -->
+        <div class="confirmation-main">
+            <div class="success-header">
+                <div class="success-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h1 style="color:var(--brun); font-size: 1.8rem;">Merci pour votre commande !</h1>
+                <p style="color:var(--gris); margin-bottom: 15px;">Numéro de commande : <span id="conf-order-id" style="font-weight:700; color:var(--orange);">#BW-...</span></p>
+            </div>
+
+            <div id="confirmation-map"></div>
+            <div class="map-status-overlay" id="map-status">
+                <i class="fas fa-motorcycle"></i> <span id="simul-status-text">Préparation de la livraison...</span>
+            </div>
+
+            <div style="margin-top:30px; display:flex; gap:15px;">
+                <a href="index.html" class="btn btn-outline" style="flex:1">Retour Accueil</a>
+                <a href="profil.html" class="btn btn-primary" style="flex:1">Suivre sur mon profil</a>
+            </div>
+        </div>
+
+        <!-- Zone Droite -->
+        <div class="confirmation-details">
+            <h3 style="margin-bottom:20px; color:var(--brun);">Récapitulatif</h3>
+            
+            <div class="order-summary-card">
+                <div id="order-items-list">
+                    <!-- Chargé par JS -->
+                    <div class="skeleton" style="height:50px; margin-bottom:10px;"></div>
+                    <div class="skeleton" style="height:50px;"></div>
+                </div>
+            </div>
+
+            <div style="font-size:0.85rem; color:var(--gris); margin-bottom:20px;">
+                <div style="margin-bottom:8px;"><strong>Adresse :</strong> <span id="conf-address">Chargement...</span></div>
+                <div><strong>Paiement :</strong> <span id="conf-payment">Vérification...</span></div>
+            </div>
+
+            <div class="price-total">
+                <span>Total Payé</span>
+                <span id="conf-total-price" style="color:var(--orange);">0 F</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-bottom">
+            <span>© 2025 Beautiful Women – Tous droits réservés</span>
+        </div>
+    </div>
+</footer>
+
+<div id="toast-container"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ui.js?v=2.1"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const params = new URLSearchParams(window.location.search);
+        const orderId = params.get('id');
+
+        if (!orderId) {
+            window.location.href = 'index.html';
+            return;
+        }
+
+        document.getElementById('conf-order-id').textContent = `#BW-${orderId}`;
+
+        try {
+            const res = await api.get(`/commandes/${orderId}`);
+            if (res.ok) {
+                const { commande, lignes } = res.data;
+                
+                // 1. Informations de base
+                document.getElementById('conf-address').textContent = commande.adresse_liv || 'Abidjan';
+                document.getElementById('conf-payment').textContent = commande.methode || 'Mobile Money';
+                document.getElementById('conf-total-price').textContent = api.formatPrice(commande.montant_total);
+
+                // 2. Liste des articles
+                renderSummaryItems(lignes);
+
+                // 3. Carte et Simulation
+                initConfirmationMap(commande.adresse_liv);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    });
+
+    function renderSummaryItems(lignes) {
+        const container = document.getElementById('order-items-list');
+        container.innerHTML = lignes.map(l => `
+            <div class="item-row">
+                <img src="${api.getImageUrl(l.images)}" alt="${l.nom}" class="item-img">
+                <div style="flex:1">
+                    <div style="font-weight:600; color:var(--brun);">${l.nom}</div>
+                    <div style="font-size:0.75rem; color:var(--gris);">Qté: ${l.quantite} × ${api.formatPrice(l.prix_unitaire)}</div>
+                </div>
+                <div style="font-weight:700;">${api.formatPrice(l.quantite * l.prix_unitaire)}</div>
+            </div>
+        `).join('');
+    }
+
+    // LOGIQUE CARTE
+    let map = null;
+    const NANAWAX_COORDS = [5.3678, -3.9856];
+
+    function initConfirmationMap(adresse) {
+        map = L.map('confirmation-map').setView(NANAWAX_COORDS, 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        const shopIcon = L.divIcon({
+            html: '<i class="fas fa-store" style="color:var(--orange); font-size:24px;"></i>',
+            className: 'custom-div-icon', iconSize: [30, 30], iconAnchor: [15, 15]
+        });
+        L.marker(NANAWAX_COORDS, { icon: shopIcon }).addTo(map).bindPopup('Maison Nanawax');
+
+        localiserEtSimuler(adresse);
+    }
+
+    async function localiserEtSimuler(query) {
+        const statusText = document.getElementById('simul-status-text');
+        statusText.textContent = 'Localisation de votre adresse...';
+
+        try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ', Abidjan')}`);
+            const data = await res.json();
+
+            let clientCoords = [5.3364, -4.0267]; // Fallback
+            if (data && data.length > 0) {
+                clientCoords = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+            }
+
+            const userIcon = L.divIcon({
+                html: '<i class="fas fa-map-marker-alt" style="color:var(--brun); font-size:24px;"></i>',
+                className: 'custom-div-icon', iconSize: [30, 30], iconAnchor: [15, 30]
+            });
+            L.marker(clientCoords, { icon: userIcon }).addTo(map).bindPopup('Votre adresse');
+
+            map.fitBounds(L.latLngBounds([NANAWAX_COORDS, clientCoords]), { padding: [50, 50] });
+
+            // Animate
+            startSimulation(clientCoords);
+        } catch (e) {}
+    }
+
+    function startSimulation(end) {
+        const start = NANAWAX_COORDS;
+        const statusText = document.getElementById('simul-status-text');
+        
+        const deliveryIcon = L.divIcon({
+            html: '<i class="fas fa-motorcycle" style="color:var(--vert); font-size:20px; background:white; padding:5px; border-radius:50%; box-shadow:0 2px 10px rgba(0,0,0,0.2);"></i>',
+            className: 'custom-div-icon', iconSize: [30, 30], iconAnchor: [15, 15]
+        });
+        const marker = L.marker(start, { icon: deliveryIcon }).addTo(map);
+
+        let progress = 0;
+        const frames = 100;
+        const interval = setInterval(() => {
+            progress++;
+            const pct = progress / frames;
+            const lat = start[0] + (end[0] - start[0]) * pct;
+            const lng = start[1] + (end[1] - start[1]) * pct;
+            marker.setLatLng([lat, lng]);
+
+            if (progress < 25) statusText.textContent = '📦 Commande en préparation...';
+            else if (progress < 75) statusText.textContent = '🏍️ Livreur en route !';
+            else statusText.textContent = '📍 Votre colis arrive bientôt...';
+
+            if (progress === frames) {
+                clearInterval(interval);
+                statusText.innerHTML = '<span style="color:var(--vert)">✨ Livraison simulée terminée !</span>';
+            }
+        }, 50);
+    }
+</script>
+
+<script src="js/chatbot.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,329 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Beautiful Women – Marketplace de Pagnes Africains | Côte d'Ivoire</title>
+    <meta name="description" content="Découvrez les plus beaux pagnes africains (Wax, Bazin, Kente, Bogolan) directement auprès des meilleures vendeuses de Côte d'Ivoire." />
+    <link rel="stylesheet" href="css/style.css?v=2.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" /></noscript>
+    <link rel="preload" href="images/hero-pagne.jpg" as="image" />
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+        <a href="index.html" class="navbar-logo">
+            Beautiful <span>Women</span>
+        </a>
+
+        <!-- Menu central -->
+        <ul class="navbar-menu">
+            <li><a href="index.html" class="active">Accueil</a></li>
+            <li><a href="catalogue.html">Catalogue</a></li>
+            <li><a href="modeles.html">Modèles</a></li>
+            <li><a href="#vendeurs">Vendeurs</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="#categories">Catégories</a></li>
+        </ul>
+
+        <!-- Barre de recherche -->
+        <div class="navbar-search">
+            <button onclick="lancerRecherche()"><i class="fas fa-search"></i></button>
+            <input type="text" id="search-input" placeholder="Rechercher un pagne, wax, bazin…" />
+            <button onclick="lancerRecherche()" style="display:none"></button>
+        </div>
+
+        <!-- Actions -->
+        <div class="navbar-actions">
+            <button class="nav-icon-btn" id="btn-favoris" title="Favoris" onclick="window.location='catalogue.html?favoris=1'">
+                <i class="far fa-heart"></i>
+            </button>
+            <button class="nav-icon-btn" id="btn-panier" title="Panier" onclick="window.location='panier.html'">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="badge" id="badge-panier">0</span>
+            </button>
+            <div id="nav-auth" style="display:flex; gap:8px; align-items:center; flex-shrink:0;">
+                <a href="auth.html" class="btn btn-primary" style="padding:7px 12px; font-size:0.75rem; white-space:nowrap;">Se connecter</a>
+                <a href="auth.html?mode=register" class="btn btn-outline" style="padding:7px 12px; font-size:0.75rem; color:var(--orange); border-color:var(--orange); white-space:nowrap;">S'inscrire</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- ============================================================
+     HERO BANNER
+     ============================================================ -->
+<section class="hero" id="hero">
+    <div class="hero-pattern"></div>
+
+    <div class="hero-content">
+        <!-- Texte gauche -->
+        <div class="hero-text" data-aos="fade-right">
+            <div class="hero-badge">
+                <span>🌺</span> N°1 des pagnes africains en Côte d'Ivoire
+            </div>
+
+            <h1>
+                L'élégance africaine,<br/>
+                <em>à portée de clic</em>
+            </h1>
+
+            <p class="hero-desc">
+                Découvrez des centaines de modèles de Wax, Bazin, Kente et Bogolan 
+                sélectionnés par nos meilleures boutiques d'Abidjan. Livraison rapide 
+                partout en Côte d'Ivoire.
+            </p>
+
+            <div class="hero-btns reveal reveal-up reveal-delay-2">
+                <a href="catalogue.html" class="btn btn-primary btn-magnetic pulse-hover">
+                    <i class="fas fa-store"></i> Explorer le catalogue
+                </a>
+                <a href="auth.html?mode=vendeur" class="btn btn-outline btn-magnetic">
+                    <i class="fas fa-plus"></i> Vendre ici
+                </a>
+            </div>
+
+            <!-- Stats -->
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <strong id="stat-produits">500+</strong>
+                    <span>Produits</span>
+                </div>
+                <div class="hero-stat">
+                    <strong id="stat-vendeurs">80+</strong>
+                    <span>Vendeuses</span>
+                </div>
+                <div class="hero-stat">
+                    <strong id="stat-clients">2 000+</strong>
+                    <span>Clientes</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Image droite -->
+        <div class="hero-image">
+            <div class="hero-image-card">
+                <img loading="lazy" src="images/hero-pagne.jpg" alt="Mode Africaine" 
+                     onerror="this.onerror=null; this.src='images/placeholder-pagne.jpg'; this.style.objectFit='contain'; this.style.padding='20px';" />
+            </div>
+
+            <!-- Badge flottant 1 -->
+            <div class="hero-float float-1">
+                <span class="float-icon">⭐</span>
+                <div>
+                    <strong>4.9/5</strong>
+                    <div style="font-size:0.72rem;color:#6c757d">+1 200 avis</div>
+                </div>
+            </div>
+
+            <!-- Badge flottant 2 -->
+            <div class="hero-float float-2">
+                <span class="float-icon">🚚</span>
+                <div>
+                    <strong>Livraison 24h</strong>
+                    <div style="font-size:0.72rem;color:#6c757d">Abidjan & banlieue</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SECTION CATÉGORIES
+     ============================================================ -->
+<section class="section-categories" id="categories">
+    <div class="container">
+        <div class="section-titre reveal reveal-up">
+            <h2>Nos Catégories</h2>
+            <p>Des tissus africains authentiques pour chaque occasion</p>
+        </div>
+
+        <div class="categories-grid" id="categories-grid">
+            <!-- Chargées dynamiquement via JS -->
+            <div class="categorie-card skeleton" style="height:120px"></div>
+            <div class="categorie-card skeleton" style="height:120px"></div>
+            <div class="categorie-card skeleton" style="height:120px"></div>
+            <div class="categorie-card skeleton" style="height:120px"></div>
+            <div class="categorie-card skeleton" style="height:120px"></div>
+            <div class="categorie-card skeleton" style="height:120px"></div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SECTION TENDANCES
+     ============================================================ -->
+<section class="section-tendances" id="tendances">
+    <div class="container">
+        <div class="section-titre reveal reveal-up">
+            <h2>🔥 Pagnes en Tendance</h2>
+            <p>Les modèles les plus demandés cette semaine</p>
+        </div>
+
+        <div class="produits-grid" id="tendances-grid">
+            <!-- Skeletons -->
+            <div class="produit-card skeleton" style="height:360px"></div>
+            <div class="produit-card skeleton" style="height:360px"></div>
+            <div class="produit-card skeleton" style="height:360px"></div>
+            <div class="produit-card skeleton" style="height:360px"></div>
+        </div>
+
+        <div style="text-align:center; margin-top:40px">
+            <a href="catalogue.html" class="btn btn-vert">
+                <i class="fas fa-th-large"></i> Voir tous les produits
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SECTION INSPIRATION (BANNER)
+     ============================================================ -->
+<!-- Section inspiration : background-attachment:fixed supprimé (GPU-heavy, cassait les perfs mobile) -->
+<section style="padding:100px 0; background:linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.55)), url('images/wax-hollandais.jpg'); background-size:cover; background-position:center; color:white; text-align:center; position:relative;">
+    <div class="container reveal reveal-zoom">
+        <h2 style="font-size:3rem; font-family:'Playfair Display',serif; margin-bottom:20px;">L'Inspiration Couture</h2>
+        <p style="font-size:1.2rem; max-width:700px; margin:0 auto 30px; opacity:0.9;">
+            Vous avez le tissu, nous avons les modèles. Découvrez notre galerie de créations 
+            pour trouver votre prochain style.
+        </p>
+        <a href="modeles.html" class="btn btn-primary pulse-hover" style="padding:15px 40px; font-size:1rem;">
+            Découvrir les modèles <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</section>
+
+<!-- ============================================================
+     SECTION VENDEURS VEDETTES
+     ============================================================ -->
+<section class="section-vendeurs" id="vendeurs">
+    <div class="container">
+        <div class="section-titre reveal reveal-up">
+            <h2>👑 Nos Vendeuses Vedettes</h2>
+            <p>Les boutiques les plus appréciées de notre marketplace</p>
+        </div>
+
+        <div class="vendeurs-grid" id="vendeurs-grid">
+            <div class="vendeur-card skeleton" style="height:200px"></div>
+            <div class="vendeur-card skeleton" style="height:200px"></div>
+            <div class="vendeur-card skeleton" style="height:200px"></div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     BANNIÈRE AVANTAGES
+     ============================================================ -->
+<section style="padding:60px 0; background:var(--blanc);">
+    <div class="container">
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:30px; text-align:center;">
+            <div style="padding:24px;">
+                <div style="font-size:2.5rem; margin-bottom:12px;">🚚</div>
+                <h4 style="font-family:'Poppins',sans-serif; font-size:0.95rem; margin-bottom:6px;">Livraison Rapide</h4>
+                <p style="font-size:0.82rem; color:var(--gris);">24h à Abidjan, 48h en province</p>
+            </div>
+            <div style="padding:24px;">
+                <div style="font-size:2.5rem; margin-bottom:12px;">💳</div>
+                <h4 style="font-family:'Poppins',sans-serif; font-size:0.95rem; margin-bottom:6px;">Paiement Sécurisé</h4>
+                <p style="font-size:0.82rem; color:var(--gris);">Wave, Orange Money, MTN, Moov</p>
+            </div>
+            <div style="padding:24px;">
+                <div style="font-size:2.5rem; margin-bottom:12px;">🔄</div>
+                <h4 style="font-family:'Poppins',sans-serif; font-size:0.95rem; margin-bottom:6px;">Retour Facile</h4>
+                <p style="font-size:0.82rem; color:var(--gris);">7 jours pour changer d'avis</p>
+            </div>
+            <div style="padding:24px;">
+                <div style="font-size:2.5rem; margin-bottom:12px;">✅</div>
+                <h4 style="font-family:'Poppins',sans-serif; font-size:0.95rem; margin-bottom:6px;">Produits Authentiques</h4>
+                <p style="font-size:0.82rem; color:var(--gris);">Vendeurs vérifiés et certifiés</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SECTION PROMO / NEWSLETTER
+     ============================================================ -->
+<section class="section-promo">
+    <div class="container">
+        <span style="font-size:3rem; display:block; margin-bottom:16px;">🌺</span>
+        <h2>Restez à la Mode Africaine</h2>
+        <p>Inscrivez-vous et recevez les nouvelles collections et offres exclusives en avant-première</p>
+        <form class="newsletter-form" onsubmit="abonnerNewsletter(event)">
+            <input type="email" id="newsletter-email" placeholder="Votre adresse email…" required />
+            <button type="submit">Je m'abonne !</button>
+        </form>
+    </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <!-- Brand -->
+            <div class="footer-brand">
+                <div class="footer-brand-logo">Beautiful <span>Women</span></div>
+                <p>La première marketplace de pagnes africains de Côte d'Ivoire. Achetez et vendez en toute confiance.</p>
+                <div style="margin-top:18px; display:flex; gap:12px;">
+                    <a href="#" style="color:var(--or); font-size:1.2rem;"><i class="fab fa-facebook"></i></a>
+                    <a href="#" style="color:var(--or); font-size:1.2rem;"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color:var(--or); font-size:1.2rem;"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#" style="color:var(--or); font-size:1.2rem;"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+
+            <!-- Liens -->
+            <div class="footer-col">
+                <h4>Marketplace</h4>
+                <a href="catalogue.html">Catalogue</a>
+                <a href="#categories">Wax & Bazin</a>
+                <a href="#categories">Kente & Bogolan</a>
+                <a href="#vendeurs">Vendeurs</a>
+            </div>
+            <div class="footer-col">
+                <h4>Mon Compte</h4>
+                <a href="auth.html">Se connecter</a>
+                <a href="auth.html?mode=inscription">S'inscrire</a>
+                <a href="panier.html">Mon panier</a>
+                <a href="auth.html?mode=vendeur">Devenir vendeur</a>
+            </div>
+            <div class="footer-col">
+                <h4>Aide</h4>
+                <a href="#">Guide d'achat</a>
+                <a href="#">Livraison</a>
+                <a href="#">Retours</a>
+                <a href="contact.html">Nous contacter</a>
+                <a href="https://wa.me/2250102030405">WhatsApp direct</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <span>© 2026 Beautiful Women – Tous droits réservés</span>
+            <span>Fait avec ❤️ à Abidjan, Côte d'Ivoire 🇨🇮</span>
+        </div>
+    </div>
+</footer>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- ============================================================
+     SCRIPTS
+     ============================================================ -->
+<script src="js/api.js?v=1.4"></script>
+<script src="js/panier.js?v=1.4"></script>
+<script src="js/ui.js?v=2.1"></script>
+<script src="js/main.js?v=1.4"></script>
+
+<script src="js/chatbot.js"></script>
+</body>
+</html>
+

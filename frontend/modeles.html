@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modèles & Inspiration - Beautiful Women</title>
+    <link rel="stylesheet" href="css/style.css?v=2.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" /></noscript>
+    <style>
+        .inspiration-hero {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--brun) 0%, #3d1f0d 100%);
+            color: var(--blanc);
+            text-align: center;
+            border-radius: 0 0 50px 50px;
+            margin-bottom: 50px;
+        }
+        .inspiration-hero h1 { font-size: 2.5rem; margin-bottom: 15px; }
+        .inspiration-hero p { opacity: 0.8; max-width: 600px; margin: 0 auto; }
+
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 80px;
+        }
+
+        .model-card {
+            background: var(--blanc);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+        .model-card:hover { transform: translateY(-10px); }
+
+        .model-img {
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+        .model-img img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .model-card:hover .model-img img { transform: scale(1.1); }
+
+        .model-badge {
+            position: absolute;
+            top: 15px; right: 15px;
+            background: rgba(255,255,255,0.9);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--orange);
+            backdrop-filter: blur(4px);
+        }
+
+        .model-content { padding: 20px; }
+        .model-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--brun); }
+        .model-desc { font-size: 0.85rem; color: var(--gris); line-height: 1.5; margin-bottom: 15px; }
+
+        .model-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid var(--creme-d);
+        }
+        .model-price { font-size: 1.2rem; font-weight: 700; color: var(--orange); }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+        <a href="index.html" class="navbar-logo">Beautiful <span>Women</span></a>
+        <ul class="navbar-menu">
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="catalogue.html">Catalogue</a></li>
+            <li><a href="modeles.html" class="active">Modèles</a></li>
+            <li><a href="index.html#vendeurs">Vendeurs</a></li>
+        </ul>
+        <div class="navbar-search">
+            <button onclick="lancerRecherche()"><i class="fas fa-search"></i></button>
+            <input type="text" id="search-input" placeholder="Rechercher..." />
+        </div>
+        <div class="navbar-actions">
+            <button class="nav-icon-btn"><i class="far fa-heart"></i></button>
+            <button class="nav-icon-btn" onclick="window.location='panier.html'">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="badge" id="badge-panier">0</span>
+            </button>
+            <div id="nav-auth" style="display:flex; gap:8px; align-items:center; flex-shrink:0;">
+                <a href="auth.html" class="btn btn-primary" style="padding:7px 12px; font-size:0.75rem; white-space:nowrap;">Se connecter</a>
+                <a href="auth.html?mode=register" class="btn btn-outline" style="padding:7px 12px; font-size:0.75rem; color:var(--orange); border-color:var(--orange); white-space:nowrap;">S'inscrire</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<section class="inspiration-hero">
+    <div class="container">
+        <h1 class="reveal reveal-up">Inspiration & Couture</h1>
+        <p class="reveal reveal-up reveal-delay-1">
+            Découvrez nos modèles exclusifs cousus par des artisans locaux. 
+            Laissez-vous inspirer par la créativité ivoirienne.
+        </p>
+    </div>
+</section>
+
+<div class="container">
+    <div class="section-titre reveal reveal-up">
+        <h2>Nos Modèles Favoris</h2>
+        <p>Prêt-à-porter et créations sur mesure</p>
+    </div>
+
+    <div class="models-grid" id="models-grid">
+        <!-- Skeletons -->
+        <div class="model-card skeleton" style="height:500px"></div>
+        <div class="model-card skeleton" style="height:500px"></div>
+        <div class="model-card skeleton" style="height:500px"></div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-bottom">
+            <span>© 2025 Beautiful Women – Tous droits réservés</span>
+            <span>Fait avec ❤️ à Abidjan</span>
+        </div>
+    </div>
+</footer>
+
+<div id="toast-container"></div>
+
+<script src="js/api.js"></script>
+<script src="js/panier.js"></script>
+<script src="js/ui.js?v=2.1"></script>
+<script src="js/modeles.js"></script>
+<script src="js/chatbot.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Debug Images - Beautiful Women</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
+        .test-box { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+        img { max-width: 200px; border: 2px solid #555; }
+        .status { font-weight: bold; margin-bottom: 10px; }
+        .ok { color: green; }
+        .error { color: red; }
+        pre { background: #eee; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Outil de Diagnostic - Beautiful Women</h1>
+    <p>Ce fichier permet de vérifier si les images sont accessibles par votre navigateur.</p>
+
+    <div class="test-box">
+        <div class="status">1. Test de Connexion Backend (Port 3000)</div>
+        <div id="api-status">Test en cours...</div>
+    </div>
+
+    <div class="test-box">
+        <div class="status">2. Test d'Image Directe ( uploads/bazin_1.jpg )</div>
+        <img src="http://localhost:3000/uploads/bazin_1.jpg" alt="Test Bazin" onerror="imgError(this)" onload="imgOk(this)">
+        <p id="img-status">Vérification de l'image...</p>
+    </div>
+
+    <div class="test-box">
+        <div class="status">3. Test d'Image Dynamique (Via API)</div>
+        <div id="dynamic-images">Chargement...</div>
+    </div>
+
+    <script>
+        function imgOk(el) { document.getElementById('img-status').innerHTML = '<span class="ok">✅ Image chargée avec succès !</span>'; }
+        function imgError(el) { document.getElementById('img-status').innerHTML = '<span class="error">❌ Échec du chargement de l\'image sur le port 3000.</span><br>Assurez-vous que le serveur Node est lancé avec <code>npm run demo</code>.'; }
+
+        async function diag() {
+            const apiSpan = document.getElementById('api-status');
+            try {
+                const res = await fetch('http://localhost:3000/api/health');
+                const data = await res.json();
+                apiSpan.innerHTML = '<span class="ok">✅ Backend connecté !</span> (Version: ' + data.version + ')';
+                
+                const resProd = await fetch('http://localhost:3000/api/produits?limite=3');
+                const pData = await resProd.json();
+                const div = document.getElementById('dynamic-images');
+                if (pData.produits && pData.produits.length > 0) {
+                    div.innerHTML = pData.produits.map(p => {
+                        let path = p.images;
+                        if (typeof path === 'string' && path.startsWith('[')) path = JSON.parse(path)[0];
+                        const url = 'http://localhost:3000/uploads/' + path;
+                        return `<div><strong>${p.nom}</strong><br><img src="${url}"></div>`;
+                    }).join('');
+                } else {
+                    div.innerHTML = 'Aucun produit trouvé dans la base.';
+                }
+            } catch (e) {
+                apiSpan.innerHTML = '<span class="error">❌ Impossible de contacter le serveur sur le port 3000.</span>';
+                document.getElementById('dynamic-images').innerHTML = 'Échec API.';
+            }
+        }
+        diag();
+    </script>
+</body>
+</html>

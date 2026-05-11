@@ -1,0 +1,333 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion / Inscription - Beautiful Women</title>
+    <link rel="stylesheet" href="css/style.css?v=2.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" /></noscript>
+    <style>
+        .auth-page {
+            min-height: calc(100vh - 70px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--creme) 0%, var(--creme-d) 100%);
+            padding: 40px 20px;
+        }
+
+        .auth-card {
+            background: var(--blanc);
+            width: 100%;
+            max-width: 450px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .auth-header {
+            background: linear-gradient(135deg, var(--brun), #3d1f0d);
+            color: var(--blanc);
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .auth-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(244,169,0,0.05) 20px, rgba(244,169,0,0.05) 22px);
+        }
+
+        .auth-header h2 {
+            position: relative;
+            z-index: 1;
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .auth-header p {
+            position: relative;
+            z-index: 1;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .auth-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--creme-d);
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--gris);
+        }
+
+        .auth-tab.active {
+            color: var(--orange);
+            border-bottom: 2px solid var(--orange);
+            background: var(--creme);
+        }
+
+        .auth-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--brun);
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gris);
+        }
+
+        .input-with-icon input, .input-with-icon select {
+            width: 100%;
+            padding: 12px 12px 12px 45px;
+            border: 1px solid var(--creme-d);
+            border-radius: var(--radius);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .input-with-icon input:focus {
+            border-color: var(--orange);
+            box-shadow: 0 0 0 3px rgba(232,119,34,0.1);
+        }
+
+        .role-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .role-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--creme-d);
+            border-radius: var(--radius);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .role-btn i { font-size: 1.2rem; }
+
+        .role-btn.active {
+            border-color: var(--orange);
+            background: var(--creme);
+            color: var(--orange);
+        }
+
+        .btn-auth {
+            width: 100%;
+            margin-top: 10px;
+            padding: 14px;
+            font-size: 1rem;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+        }
+
+        #seller-fields {
+            display: none;
+            border-top: 1px dashed var(--creme-d);
+            margin-top: 20px;
+            padding-top: 20px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-footer {
+            padding: 20px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--gris);
+            border-top: 1px solid var(--creme-d);
+        }
+
+        .auth-footer a {
+            color: var(--orange);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+        <a href="index.html" class="navbar-logo">Beautiful <span>Women</span></a>
+        <div class="navbar-actions">
+            <a href="index.html" style="font-size:0.9rem; font-weight:600; color:var(--brun)">
+                <i class="fas fa-arrow-left"></i> Retour à l'accueil
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2 id="auth-title">Bienvenue !</h2>
+            <p id="auth-subtitle">Accédez à votre espace Beautiful Women</p>
+        </div>
+
+        <div class="auth-tabs">
+            <div class="auth-tab active" id="tab-login" onclick="switchTab('login')">Se connecter</div>
+            <div class="auth-tab" id="tab-register" onclick="switchTab('register')">S'inscrire</div>
+        </div>
+
+        <div class="auth-body">
+            <!-- Formulaire Connexion -->
+            <form id="form-login" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="login-email" placeholder="votre@email.com" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Mot de passe</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="login-password" placeholder="••••••••" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-auth">Se connecter 🌺</button>
+            </form>
+
+            <!-- Formulaire Inscription (masqué par défaut) -->
+            <form id="form-register" style="display:none" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>Je suis un(e)...</label>
+                    <div class="role-selector">
+                        <div class="role-btn active" id="role-acheteur" onclick="selectRole('acheteur')">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span>Acheteur</span>
+                        </div>
+                        <div class="role-btn" id="role-vendeur" onclick="selectRole('vendeur')">
+                            <i class="fas fa-store"></i>
+                            <span>Vendeur</span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="reg-role" value="acheteur">
+                </div>
+
+                <div class="form-group">
+                    <label>Nom complet</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="reg-nom" placeholder="Ex: Adjoua Koné" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="reg-email" placeholder="votre@email.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Téléphone</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" id="reg-tel" placeholder="07 00 00 00 00">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Mot de passe</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="reg-password" placeholder="8 caractères min." required>
+                    </div>
+                </div>
+
+                <!-- Champs spécifiques Vendeur -->
+                <div id="seller-fields">
+                    <div class="form-group">
+                        <label>Nom de votre boutique</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-tag"></i>
+                            <input type="text" id="reg-boutique" placeholder="Ex: Maison du Wax">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Localisation (Ville, Quartier)</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <input type="text" id="reg-loc" placeholder="Ex: Abidjan, Marcory">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-vert btn-auth">S'inscrire ✨</button>
+            </form>
+        </div>
+
+        <div class="auth-footer" id="auth-footer-text">
+            Vous n'avez pas de compte ? <a href="#" onclick="switchTab('register')">Inscrivez-vous</a>
+        </div>
+    </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script src="js/api.js"></script>
+<script src="js/ui.js?v=2.1"></script>
+<script src="js/auth.js"></script>
+
+<script src="js/chatbot.js"></script>
+</body>
+</html>
+

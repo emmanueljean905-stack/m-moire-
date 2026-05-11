@@ -1,0 +1,427 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Profil - Beautiful Women</title>
+    <link rel="stylesheet" href="css/style.css?v=2.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/awesome/6.5.0/css/all.min.css" /></noscript>
+    <style>
+        .profile-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+            padding: 40px 0;
+        }
+
+        .profile-sidebar {
+            background: var(--blanc);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .user-summary {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--creme-d);
+        }
+
+        .user-avatar-large {
+            width: 80px;
+            height: 80px;
+            background: var(--creme);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--brun);
+            margin: 0 auto 15px;
+            border: 3px solid var(--orange);
+            overflow: hidden;
+        }
+
+        .user-avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .profile-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            color: var(--gris);
+        }
+
+        .profile-nav-item:hover, .profile-nav-item.active {
+            background: var(--creme);
+            color: var(--orange);
+        }
+
+        .profile-content {
+            background: var(--blanc);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            min-height: 500px;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Business Table Styles */
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .order-table th, .order-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--creme-d);
+        }
+
+        .order-table th {
+            font-weight: 600;
+            color: var(--gris);
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-en_attente { background: #fff3cd; color: #856404; }
+        .status-en_livraison { background: #cce5ff; color: #004085; }
+        .status-livree { background: #d4edda; color: #155724; }
+        .status-annulee { background: #f8d7da; color: #721c24; }
+        .status-payee { background: #d1ecf1; color: #0c5460; }
+
+        /* Tracking Modal */
+        .tracking-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(8px);
+        }
+        .tracking-card {
+            background: var(--blanc);
+            width: 100%;
+            max-width: 900px; /* Wider for details + map */
+            border-radius: var(--radius-lg);
+            padding: 0;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.4s ease;
+            display: grid;
+            grid-template-columns: 450px 1fr;
+            max-height: 90vh;
+        }
+
+        .tracking-map-side {
+            background: #eee;
+            position: relative;
+        }
+
+        #tracking-map {
+            height: 100%;
+            width: 100%;
+            min-height: 400px;
+        }
+
+        .tracking-info-side {
+            padding: 30px;
+            overflow-y: auto;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .order-items-mini {
+            margin-top: 20px;
+            border-top: 1px solid var(--creme-d);
+            padding-top: 15px;
+        }
+
+        .item-mini {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+        }
+
+        .item-mini img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        @keyframes slideUp {
+            from { opacity:0; transform: translateY(30px); }
+            to { opacity:1; transform: translateY(0); }
+        }
+        .tracking-progress-container {
+            margin: 30px 0;
+            position: relative;
+        }
+        .progress-bar-bg {
+            height: 10px;
+            background: var(--creme-d);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--orange), var(--or));
+            width: 0%;
+            transition: width 1s ease;
+        }
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--gris);
+        }
+        .step.active { color: var(--orange); }
+
+        @media (max-width: 992px) {
+            .profile-layout {
+                grid-template-columns: 1fr;
+            }
+            .profile-sidebar {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Modal de Suivi -->
+<!-- Modal de Suivi / Détails -->
+<div id="tracking-modal" class="tracking-modal">
+    <div class="tracking-card">
+        <!-- Côté Gauche : Carte -->
+        <div class="tracking-map-side">
+            <div id="tracking-map"></div>
+            <div id="simul-status-overlay" style="position:absolute; bottom:20px; left:20px; right:20px; background:rgba(255,255,255,0.9); padding:10px 15px; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.1); z-index:1000; font-size:0.8rem; font-weight:700; color:var(--brun); display:none;">
+                <i class="fas fa-motorcycle"></i> <span id="simul-status-text">Localisation...</span>
+            </div>
+        </div>
+
+        <!-- Côté Droit : Détails -->
+        <div class="tracking-info-side">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                    <h3 style="color:var(--brun); margin:0;">Détails Commande</h3>
+                    <p id="track-order-id" style="color:var(--orange); font-weight:700; margin-bottom:15px;"></p>
+                </div>
+                <button class="nav-icon-btn" onclick="fermerTracking()" style="background:var(--creme);"><i class="fas fa-times"></i></button>
+            </div>
+
+            <div class="tracking-progress-container" style="margin:10px 0 20px;">
+                <div class="steps" style="font-size:0.65rem;">
+                    <span>Pris</span>
+                    <span>Transit</span>
+                    <span>Proche</span>
+                    <span>Livré</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div id="track-progress-fill" class="progress-bar-fill"></div>
+                </div>
+            </div>
+
+            <div id="tracking-summary-box" style="background:var(--creme); padding:15px; border-radius:12px; font-size:0.8rem; border-left:4px solid var(--orange); margin-bottom:20px;">
+                <div style="margin-bottom:5px;"><strong>Statut :</strong> <span id="track-status-name">Chargement...</span></div>
+                <div><strong>Adresse :</strong> <span id="track-address">...</span></div>
+            </div>
+
+            <div class="order-items-mini">
+                <h4 style="font-size:0.9rem; margin-bottom:10px;">Articles commandés</h4>
+                <div id="track-items-list">
+                    <!-- JS -->
+                </div>
+            </div>
+
+            <div style="margin-top:auto; padding-top:15px; border-top:1px solid var(--creme-d); display:flex; justify-content:space-between; font-weight:700;">
+                <span>Total</span>
+                <span id="track-total-price" style="color:var(--orange);">0 F</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+        <a href="index.html" class="navbar-logo">Beautiful <span>Women</span></a>
+        <ul class="navbar-menu">
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="catalogue.html">Catalogue</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="navbar-actions">
+            <button class="nav-icon-btn" onclick="window.location='panier.html'">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="badge" id="badge-panier">0</span>
+            </button>
+            <div id="nav-auth" style="display:flex; gap:10px; align-items:center;"></div>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="profile-layout">
+        <!-- Sidebar -->
+        <aside class="profile-sidebar">
+            <div class="user-summary">
+                <div class="user-avatar-large" id="profile-avatar" style="position:relative; cursor:pointer;" onclick="document.getElementById('avatar-upload').click()">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <input type="file" id="avatar-upload" style="display:none" accept="image/*" onchange="uploadAvatar(this)">
+                <h3 id="profile-name">Chargement...</h3>
+                <p id="profile-role" style="font-size:0.8rem; color:var(--orange); text-transform:uppercase; font-weight:700; margin-top:5px;"></p>
+            </div>
+
+            <nav class="profile-nav">
+                <div class="profile-nav-item active" onclick="switchSection('mes-commandes', this)">
+                    <i class="fas fa-shopping-cart"></i> Mes Commandes
+                </div>
+                <div class="profile-nav-item" onclick="switchSection('mes-favoris', this)">
+                    <i class="fas fa-heart"></i> Mes Favoris
+                </div>
+                <div class="profile-nav-item" onclick="switchSection('mon-compte', this)">
+                    <i class="fas fa-user-cog"></i> Mon Compte
+                </div>
+                <div class="profile-nav-item" onclick="session.deconnecter()" style="color:var(--rouge); margin-top:20px;">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="profile-content">
+            <!-- Section Commandes -->
+            <section id="mes-commandes" class="content-section active">
+                <h2 style="color:var(--brun); margin-bottom:25px;">Historique de mes commandes</h2>
+                <div id="orders-list">
+                    <!-- Skeletons -->
+                    <div class="skeleton" style="height:40px; margin-bottom:10px;"></div>
+                    <div class="skeleton" style="height:40px; margin-bottom:10px;"></div>
+                    <div class="skeleton" style="height:40px; margin-bottom:10px;"></div>
+                </div>
+            </section>
+
+            <!-- Section Favoris -->
+            <section id="mes-favoris" class="content-section">
+                <h2 style="color:var(--brun); margin-bottom:25px;">Mes articles préférés</h2>
+                <div class="produits-grid" id="favorites-grid">
+                    <!-- Loaded by JS -->
+                </div>
+            </section>
+
+            <!-- Section Mon Compte -->
+            <section id="mon-compte" class="content-section">
+                <h2 style="color:var(--brun); margin-bottom:25px;">Paramètres du compte</h2>
+                <form id="form-profile" onsubmit="handleUpdateProfile(event)">
+                    <div class="form-group">
+                        <label>Nom complet</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="acc-nom" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email (non modifiable)</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="acc-email" disabled style="background:var(--creme-d); cursor:not-allowed;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Téléphone</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-phone"></i>
+                            <input type="tel" id="acc-tel">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" id="btn-save-profile" style="width:100%; margin-top:20px;">
+                        <i class="fas fa-save"></i> Enregistrer les modifications
+                    </button>
+
+                    <div id="profile-msg" style="margin-top:15px; text-align:center; font-size:14px;"></div>
+                </form>
+            </section>
+        </main>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-bottom">
+            <span>© 2025 Beautiful Women – Tous droits réservés</span>
+            <span>Fait avec ❤️ à Abidjan</span>
+        </div>
+    </div>
+</footer>
+
+<div id="toast-container"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="js/api.js"></script>
+<script src="js/panier.js"></script>
+<script src="js/ui.js?v=2.1"></script>
+<script src="js/profil.js"></script>
+
+<script src="js/chatbot.js"></script>
+</body>
+</html>
+

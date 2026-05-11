@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "nom": "Wax",
+    "slug": "wax"
+  },
+  {
+    "id": 2,
+    "nom": "Bazin",
+    "slug": "bazin"
+  },
+  {
+    "id": 3,
+    "nom": "Kente",
+    "slug": "kente"
+  },
+  {
+    "id": 4,
+    "nom": "Bogolan",
+    "slug": "bogolan"
+  },
+  {
+    "id": 5,
+    "nom": "Kita",
+    "slug": "kita"
+  },
+  {
+    "id": 6,
+    "nom": "Ankara",
+    "slug": "ankara"
+  },
+  {
+    "id": 7,
+    "nom": "Couture & Modèles",
+    "slug": "couture-modeles"
+  }
+]

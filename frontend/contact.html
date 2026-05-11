@@ -1,0 +1,314 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Client & Support - Beautiful Women</title>
+    <link rel="stylesheet" href="css/style.css?v=2.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .contact-header {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('images/hero-pagne.jpg');
+            background-size: cover;
+            background-position: center;
+            padding: 100px 0 60px;
+            color: white;
+            text-align: center;
+        }
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 50px;
+            margin: -60px auto 80px;
+            position: relative;
+            z-index: 10;
+        }
+        .contact-card {
+            background: var(--blanc);
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+        }
+        .info-card {
+            background: var(--brun);
+            color: white;
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+        }
+        .contact-info-item {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            align-items: flex-start;
+        }
+        .contact-info-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--or);
+            flex-shrink: 0;
+        }
+        .wa-contact-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: #25d366;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+        .wa-contact-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
+        }
+        @media (max-width: 900px) {
+            .contact-container { grid-template-columns: 1fr; margin-top: 20px; }
+        }
+
+        /* --- Design Premium Formulaire --- */
+        .form-group {
+            margin-bottom: 25px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--brun);
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+        }
+        .input-with-icon {
+            position: relative;
+            display: block;
+        }
+        .input-with-icon i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0a0a0;
+            font-size: 1.1rem;
+            transition: 0.3s;
+            pointer-events: none;
+            z-index: 2;
+        }
+        .premium-input {
+            width: 100%;
+            padding: 16px 20px 16px 50px;
+            border: 2px solid #eef0f5;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            background: #fafbfc;
+            color: var(--texte);
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        .premium-input:focus {
+            background: #ffffff;
+            border-color: var(--orange);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(232, 119, 34, 0.1);
+        }
+        .input-with-icon:focus-within i {
+            color: var(--orange);
+        }
+        .premium-textarea {
+            width: 100%;
+            padding: 20px;
+            border: 2px solid #eef0f5;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            background: #fafbfc;
+            color: var(--texte);
+            min-height: 160px;
+            resize: vertical;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        .premium-textarea:focus {
+            background: #ffffff;
+            border-color: var(--orange);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(232, 119, 34, 0.1);
+        }
+        .contact-form-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--brun);
+            margin-bottom: 35px;
+            position: relative;
+            padding-bottom: 15px;
+            font-weight: 700;
+        }
+        .contact-form-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--orange);
+            border-radius: 2px;
+        }
+        .btn-premium {
+            background: var(--orange);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(232, 119, 34, 0.2);
+        }
+        .btn-premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(232, 119, 34, 0.3);
+            background: #d66a1a;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar"></nav>
+
+<header class="contact-header">
+    <div class="container">
+        <h1 style="font-size:3rem; font-family:'Playfair Display',serif;">Service Client</h1>
+        <p style="font-size:1.1rem; opacity:0.9; max-width:600px; margin:15px auto 0;">Nous sommes là pour vous aider du lundi au samedi, de 8h à 19h.</p>
+    </div>
+</header>
+
+<div class="container contact-container">
+    <!-- Formulaire -->
+    <div class="contact-card">
+        <h2 class="contact-form-title">Envoyez-nous un message</h2>
+        <form onsubmit="handleContactForm(event)" class="auth-form" style="padding:0; box-shadow:none;">
+            <div class="form-group">
+                <label>Nom complet</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="contact-nom" class="premium-input" placeholder="Votre nom" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Adresse Email</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="contact-email" class="premium-input" placeholder="votre@email.com" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Sujet de votre demande</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-tag"></i>
+                    <select id="contact-sujet" class="premium-input" style="cursor:pointer; appearance:none; -webkit-appearance:none;">
+                        <option value="Suivi de commande">📦 Suivi de commande</option>
+                        <option value="Problème technique">🛠️ Problème technique</option>
+                        <option value="Devenir vendeur">🤝 Devenir vendeur</option>
+                        <option value="Autre">💬 Autre demande</option>
+                    </select>
+                    <!-- Flèche custom pour le select -->
+                    <i class="fas fa-chevron-down" style="left:auto; right:20px; font-size:0.9rem;"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Votre message</label>
+                <textarea id="contact-message" class="premium-textarea" placeholder="Comment pouvons-nous vous aider aujourd'hui ?" required></textarea>
+            </div>
+            <button type="submit" class="btn-premium" style="margin-top:10px;">
+                Envoyer le message <i class="fas fa-paper-plane"></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- Infos -->
+    <div class="info-card">
+        <h2 style="margin-bottom:30px; color:var(--or);">Nos Coordonnées</h2>
+        
+        <div class="contact-info-item">
+            <div class="contact-info-icon"><i class="fas fa-phone-alt"></i></div>
+            <div>
+                <h4 style="margin-bottom:5px;">Téléphone</h4>
+                <p style="opacity:0.8;">+225 01 02 03 04 05</p>
+                <p style="opacity:0.8;">+225 07 08 09 10 11</p>
+            </div>
+        </div>
+
+        <div class="contact-info-item">
+            <div class="contact-info-icon"><i class="fas fa-envelope"></i></div>
+            <div>
+                <h4 style="margin-bottom:5px;">Email Support</h4>
+                <p style="opacity:0.8;">contact@beautifulwomen.ci</p>
+                <p style="opacity:0.8;">support@beautifulwomen.ci</p>
+            </div>
+        </div>
+
+        <div class="contact-info-item">
+            <div class="contact-info-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <div>
+                <h4 style="margin-bottom:5px;">Siège Social</h4>
+                <p style="opacity:0.8;">Cocody, Cité des Arts</p>
+                <p style="opacity:0.8;">Abidjan, Côte d'Ivoire</p>
+            </div>
+        </div>
+
+        <div style="margin-top:40px; border-top:1px solid rgba(255,255,255,0.1); padding-top:30px; text-align:center;">
+            <p style="margin-bottom:20px;">Besoin d'une réponse immédiate ?</p>
+            <a href="https://wa.me/2250102030405" target="_blank" class="wa-contact-btn">
+                <i class="fab fa-whatsapp" style="font-size:1.5rem;"></i> Discuter sur WhatsApp
+            </a>
+        </div>
+    </div>
+</div>
+
+<footer class="footer" id="footer"></footer>
+
+<div id="toast-container"></div>
+
+<script src="js/api.js"></script>
+<script src="js/ui.js?v=2.1"></script>
+<script>
+    // Injecter Navbar et Footer
+    document.addEventListener('DOMContentLoaded', () => {
+        // Mock simple pour la démo si nécessaire, ou on utilise le système global
+        if (typeof majNavbarAuth === 'function') majNavbarAuth();
+    });
+</script>
+<script>
+    // Template simple pour le menu si ui.js n'injecte pas tout
+    const nav = document.getElementById('navbar');
+    nav.innerHTML = `
+        <div class="navbar-inner">
+            <a href="index.html" class="navbar-logo">Beautiful <span>Women</span></a>
+            <ul class="navbar-menu">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="catalogue.html">Catalogue</a></li>
+                <li><a href="contact.html" class="active">Contact</a></li>
+            </ul>
+        </div>
+    `;
+</script>
+
+<script src="js/chatbot.js"></script>
+</body>
+</html>
+

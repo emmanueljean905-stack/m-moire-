@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Diagnostic Images - Beautiful Women</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        .test-box { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+        img { max-width: 200px; border: 1px solid #000; }
+        pre { background: #eee; padding: 10px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Diagnostic des Images 🔍</h1>
+    
+    <div class="test-box">
+        <h3>1. Configuration de l'URL Backend</h3>
+        <p id="url-info">Calcul en cours...</p>
+    </div>
+
+    <div class="test-box">
+        <h3>2. Test de connexion API (/health)</h3>
+        <p id="api-status">En attente...</p>
+        <pre id="api-response"></pre>
+    </div>
+
+    <div class="test-box">
+        <h3>3. Test d'affichage d'image directe</h3>
+        <p>Essai de chargement de <code>/uploads/wax_hollandais_1.jpg</code> :</p>
+        <div id="img-container">
+            <p>Chargement...</p>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        async function runDiagnostic() {
+            // Test 1: URL
+            const backendUrl = getBackendUrl();
+            document.getElementById('url-info').innerHTML = `
+                Votre URL backend détectée est : <strong>${backendUrl}</strong><br>
+                <em>(Si vous voyez localhost et que vous utilisez un téléphone, ça ne marchera pas)</em>
+            `;
+
+            // Test 2: API
+            try {
+                const res = await fetch(`${backendUrl}/api/health`);
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('api-status').innerHTML = '<span class="success">✅ Connecté au Backend !</span>';
+                    document.getElementById('api-response').textContent = JSON.stringify(data, null, 2);
+                } else {
+                    document.getElementById('api-status').innerHTML = `<span class="error">❌ Erreur API (${res.status})</span>`;
+                }
+            } catch (err) {
+                document.getElementById('api-status').innerHTML = `<span class="error">❌ Impossible de contacter le serveur (${err.message}).</span><br>Assurez-vous que <code>npm run demo</code> est lancé dans le dossier backend.`;
+            }
+
+            // Test 3: Image
+            const imgPath = getImageUrl('wax_hollandais_1.jpg');
+            const img = new Image();
+            img.onload = () => {
+                document.getElementById('img-container').innerHTML = `
+                    <span class="success">✅ Image chargée avec succès !</span><br>
+                    <img src="${imgPath}" alt="Test">
+                    <p>URL testée : ${imgPath}</p>
+                `;
+            };
+            img.onerror = () => {
+                document.getElementById('img-container').innerHTML = `
+                    <span class="error">❌ Échec du chargement de l'image.</span><br>
+                    <p>URL testée : ${imgPath}</p>
+                    <p>Conseil : Ouvrez cette URL directement dans un nouvel onglet pour voir l'erreur précise.</p>
+                `;
+            };
+            img.src = imgPath;
+        }
+
+        window.onload = runDiagnostic;
+    </script>
+<script src="js/chatbot.js"></script>
+</body>
+</html>
+
