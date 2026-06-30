@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Administration - Beautiful Women</title>
+    <link rel="stylesheet" href="css/style.css?v=2.7">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" /></noscript>
+    <style>
+        * { box-sizing: border-box; }
+        body { background: #f4f6f9; font-family: 'Outfit', sans-serif; }
+
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* ===== SIDEBAR ===== */
+        .dashboard-sidebar {
+            background: linear-gradient(180deg, #1e1e2f 0%, #0f0f1b 100%);
+            color: white;
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 70px;
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            padding: 0 25px 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .admin-avatar-container {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--or), var(--orange));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.15);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        .sidebar-btn {
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            color: rgba(255,255,255,0.7);
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-btn:hover, .sidebar-btn.active {
+            background: rgba(255,255,255,0.05);
+            color: var(--or);
+            border-left-color: var(--or);
+        }
+
+        #btn-deconnexion:hover {
+            background: rgba(239, 68, 68, 0.15) !important;
+            color: #ff6b6b !important;
+            border-left-color: #ef4444 !important;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .dashboard-main {
+            background: var(--creme);
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-header h2 {
+            font-size: 1.8rem;
+            color: var(--brun);
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .dashboard-header p {
+            color: var(--gris);
+            font-size: 0.9rem;
+            margin: 5px 0 0 0;
+        }
+
+        /* ===== STAT CARDS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--blanc);
+            padding: 25px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: var(--transition);
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .stat-card.purple .stat-icon { background: linear-gradient(135deg, #7c4dff, #651fff); }
+        .stat-card.orange .stat-icon { background: linear-gradient(135deg, #ff9100, #ff6d00); }
+        .stat-card.green .stat-icon { background: linear-gradient(135deg, #00e676, #00c853); }
+        .stat-card.blue .stat-icon { background: linear-gradient(135deg, #2979ff, #2962ff); }
+
+        .stat-info h3 {
+            font-size: 1.6rem;
+            margin: 0 0 2px 0;
+            color: var(--brun);
+            font-weight: 800;
+        }
+
+        .stat-info p {
+            font-size: 0.75rem;
+            color: var(--gris);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+
+        /* ===== TABLES ===== */
+        .table-container {
+            background: var(--blanc);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        .table-header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--creme-d);
+        }
+
+        .table-header-flex h3 {
+            font-size: 1.2rem;
+            color: var(--brun);
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .search-box {
+            position: relative;
+            width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px 12px 8px 35px;
+            border: 1px solid var(--creme-d);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .search-box input:focus {
+            border-color: var(--orange);
+            box-shadow: 0 0 0 3px rgba(232,119,34,0.08);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gris);
+            font-size: 0.85rem;
+        }
+
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .order-table th {
+            background: var(--creme);
+            color: var(--brun);
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            padding: 15px;
+            font-weight: 700;
+        }
+
+        .order-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--creme-d);
+            font-size: 0.9rem;
+            color: #333;
+            vertical-align: middle;
+        }
+
+        .order-table tr:last-child td { border-bottom: none; }
+        .order-table tr:hover { background: rgba(244,169,0,0.01); }
+
+        .btn-action {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-action.success { background: #d4edda; color: #155724; }
+        .btn-action.success:hover { background: #c3e6cb; }
+        .btn-action.danger { background: #f8d7da; color: #721c24; }
+        .btn-action.danger:hover { background: #f5c6cb; }
+        .btn-action.info { background: #cce5ff; color: #004085; }
+        .btn-action.info:hover { background: #b8daff; }
+
+        /* ===== BADGES ===== */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .badge.active { background: #d4edda; color: #155724; }
+        .badge.inactive { background: #f8d7da; color: #721c24; }
+        .badge.pending { background: #fff3cd; color: #856404; }
+
+        /* ===== DASHBOARD SECTIONS ===== */
+        .dashboard-section {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .dashboard-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .dashboard-layout { grid-template-columns: 1fr; }
+            .dashboard-sidebar { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+        <a href="index.html" class="navbar-logo">
+            <img src="images/logo-2.png?v=2.0" alt="Beautiful Women Logo" class="logo-img">
+            <span class="logo-text"><span class="logo-text-orange">Beautiful</span><span class="logo-text-green">Women</span></span>
+        </a>
+        <div style="color: white; font-weight: 700; font-size: 1.1rem; background: rgba(255,255,255,0.08); padding: 6px 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15);">
+            👑 Console d'Administration
+        </div>
+        <div class="navbar-actions">
+            <div id="nav-auth" style="display:flex; gap:10px; align-items:center;"></div>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid" style="padding: 0;">
+    <div class="dashboard-layout">
+        <!-- Sidebar de Navigation -->
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-header">
+                <div class="admin-avatar-container">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h3 style="color: white; font-size: 1.1rem; margin: 0;" id="admin-name">Administrateur</h3>
+                <span style="color: var(--or); font-size: 0.72rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Super Admin</span>
+            </div>
+
+            <nav style="display: flex; flex-direction: column; gap: 5px;">
+                <div class="sidebar-btn active" onclick="switchTab('stats', this)">
+                    <i class="fas fa-chart-pie" style="width: 20px;"></i> 📊 Stats Globales
+                </div>
+                <div class="sidebar-btn" onclick="switchTab('vendeurs', this)">
+                    <i class="fas fa-store-slash" style="width: 20px;"></i> 🤝 Valider vendeurs
+                </div>
+                <div class="sidebar-btn" onclick="switchTab('produits', this)">
+                    <i class="fas fa-tshirt" style="width: 20px;"></i> 👗 Modérer produits
+                </div>
+                <div class="sidebar-btn" onclick="switchTab('litiges', this)">
+                    <i class="fas fa-exclamation-triangle" style="width: 20px;"></i> ⚠️ Gérer litiges
+                </div>
+                <div class="sidebar-btn" id="btn-deconnexion" onclick="session.deconnecter()" style="margin-top: 30px; border-bottom: none;">
+                    <i class="fas fa-sign-out-alt" style="width: 20px;"></i> Déconnexion
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Contenu principal du Dashboard -->
+        <main class="dashboard-main">
+            <!-- 1. SECTION : STATS GLOBALES -->
+            <section id="section-stats" class="dashboard-section active">
+                <div class="dashboard-header">
+                    <div>
+                        <h2>Statistiques de la Plateforme</h2>
+                        <p>Vue d'ensemble de l'activité commerciale en temps réel.</p>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card purple">
+                        <div class="stat-icon"><i class="fas fa-wallet"></i></div>
+                        <div class="stat-info">
+                            <h3 id="kpi-ca">0 F</h3>
+                            <p>CA Global cumulé</p>
+                        </div>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-icon"><i class="fas fa-user-friends"></i></div>
+                        <div class="stat-info">
+                            <h3 id="kpi-acheteurs">0</h3>
+                            <p>Acheteurs actifs</p>
+                        </div>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-icon"><i class="fas fa-store"></i></div>
+                        <div class="stat-info">
+                            <h3 id="kpi-vendeurs">0</h3>
+                            <p>Boutiques d'artisans</p>
+                        </div>
+                    </div>
+                    <div class="stat-card blue">
+                        <div class="stat-icon"><i class="fas fa-boxes"></i></div>
+                        <div class="stat-info">
+                            <h3 id="kpi-produits">0</h3>
+                            <p>Articles référencés</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header-flex">
+                        <h3>Dernières Commandes</h3>
+                    </div>
+                    <table class="order-table" id="table-commandes-recentes">
+                        <thead>
+                            <tr>
+                                <th>Commande ID</th>
+                                <th>Client</th>
+                                <th>Date</th>
+                                <th>Montant</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Données injectées en JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 2. SECTION : VALIDER VENDEURS -->
+            <section id="section-vendeurs" class="dashboard-section">
+                <div class="dashboard-header">
+                    <div>
+                        <h2>Validation des Vendeurs</h2>
+                        <p>Approuvez de nouvelles demandes d'artisans ou suspendez des comptes.</p>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header-flex">
+                        <h3>Liste des Boutiques</h3>
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="search-vendeurs" placeholder="Rechercher une boutique..." oninput="filtrerVendeurs()">
+                        </div>
+                    </div>
+                    <table class="order-table" id="table-vendeurs">
+                        <thead>
+                            <tr>
+                                <th>Boutique</th>
+                                <th>Propriétaire</th>
+                                <th>Localisation</th>
+                                <th>Date d'inscription</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Données injectées en JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 3. SECTION : MODÉRER PRODUITS -->
+            <section id="section-produits" class="dashboard-section">
+                <div class="dashboard-header">
+                    <div>
+                        <h2>Modération du Catalogue</h2>
+                        <p>Activez ou masquez des articles mis en vente sur la marketplace.</p>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header-flex">
+                        <h3>Tous les Produits</h3>
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="search-produits" placeholder="Rechercher un produit..." oninput="filtrerProduits()">
+                        </div>
+                    </div>
+                    <table class="order-table" id="table-produits">
+                        <thead>
+                            <tr>
+                                <th>Visuel</th>
+                                <th>Nom de l'article</th>
+                                <th>Boutique</th>
+                                <th>Catégorie</th>
+                                <th>Prix</th>
+                                <th>Stock</th>
+                                <th>État</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Données injectées en JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 4. SECTION : GÉRER LITIGES -->
+            <section id="section-litiges" class="dashboard-section">
+                <div class="dashboard-header">
+                    <div>
+                        <h2>Gestion des Litiges & Réclamations</h2>
+                        <p>Consultez les requêtes de vos clients et résolvez-les.</p>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header-flex">
+                        <h3>Litiges Signalés</h3>
+                    </div>
+                    <table class="order-table" id="table-litiges">
+                        <thead>
+                            <tr>
+                                <th>Commande ID</th>
+                                <th>Client</th>
+                                <th>Description du problème</th>
+                                <th>Date</th>
+                                <th>État</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Données injectées en JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script src="js/api.js?v=2.3"></script>
+<script src="js/panier.js?v=2.1"></script>
+<script src="js/ui.js?v=2.2"></script>
+<script src="js/admin-dashboard.js"></script>
+</body>
+</html>

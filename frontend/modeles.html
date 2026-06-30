@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Modèles & Inspiration - Beautiful Women</title>
-    <link rel="stylesheet" href="css/style.css?v=2.0" />
+    <link rel="stylesheet" href="css/style.css?v=2.7" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
@@ -83,7 +83,9 @@
 <!-- Navbar -->
 <nav class="navbar" id="navbar">
     <div class="navbar-inner">
-        <a href="index.html" class="navbar-logo">Beautiful <span>Women</span></a>
+        <a href="index.html" class="navbar-logo">
+            <img src="images/logo-2.png?v=2.0" alt="Beautiful Women Logo" class="logo-img"><span class="logo-text"><span class="logo-text-orange">Beautiful</span><span class="logo-text-green">Women</span></span>
+        </a>
         <ul class="navbar-menu">
             <li><a href="index.html">Accueil</a></li>
             <li><a href="catalogue.html">Catalogue</a></li>
@@ -95,8 +97,8 @@
             <input type="text" id="search-input" placeholder="Rechercher..." />
         </div>
         <div class="navbar-actions">
-            <button class="nav-icon-btn"><i class="far fa-heart"></i></button>
-            <button class="nav-icon-btn" onclick="window.location='panier.html'">
+            <button class="nav-icon-btn" id="btn-favoris" title="Favoris" onclick="window.location='catalogue.html?favoris=1'"><i class="far fa-heart"></i></button>
+            <button class="nav-icon-btn" id="btn-panier" title="Panier" onclick="window.location='panier.html'">
                 <i class="fas fa-shopping-bag"></i>
                 <span class="badge" id="badge-panier">0</span>
             </button>
@@ -104,9 +106,26 @@
                 <a href="auth.html" class="btn btn-primary" style="padding:7px 12px; font-size:0.75rem; white-space:nowrap;">Se connecter</a>
                 <a href="auth.html?mode=register" class="btn btn-outline" style="padding:7px 12px; font-size:0.75rem; color:var(--orange); border-color:var(--orange); white-space:nowrap;">S'inscrire</a>
             </div>
+            <!-- Bouton hamburger mobile -->
+            <button class="navbar-hamburger" id="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </div>
 </nav>
+
+<!-- Menu mobile drawer -->
+<div class="mobile-menu" id="mobile-menu">
+    <a href="index.html"><i class="fas fa-home"></i> Accueil</a>
+    <a href="catalogue.html"><i class="fas fa-th-large"></i> Catalogue</a>
+    <a href="modeles.html" class="active"><i class="fas fa-tshirt"></i> Modèles</a>
+    <a href="index.html#vendeurs" onclick="closeMobileMenu()"><i class="fas fa-store"></i> Vendeurs</a>
+    <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+    <div class="mobile-auth-btns" id="mobile-auth-btns">
+        <a href="auth.html" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Connexion</a>
+        <a href="auth.html?mode=register" class="btn btn-vert"><i class="fas fa-user-plus"></i> S'inscrire</a>
+    </div>
+</div>
 
 <section class="inspiration-hero">
     <div class="container">
@@ -143,9 +162,9 @@
 
 <div id="toast-container"></div>
 
-<script src="js/api.js"></script>
+<script src="js/api.js?v=2.3"></script>
 <script src="js/panier.js"></script>
-<script src="js/ui.js?v=2.1"></script>
+<script src="js/ui.js?v=2.2"></script>
 <script src="js/modeles.js"></script>
 <script src="js/chatbot.js"></script>
 </body>

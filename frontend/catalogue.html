@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Catalogue - Beautiful Women</title>
-    <link rel="stylesheet" href="css/style.css?v=2.0" />
+    <link rel="stylesheet" href="css/style.css?v=2.7" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
@@ -25,7 +25,7 @@
             padding: 25px;
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow);
-            height: sticky;
+            position: sticky;
             top: 100px;
         }
 
@@ -147,7 +147,9 @@
 <!-- Navbar -->
 <nav class="navbar">
     <div class="navbar-inner">
-        <a href="index.html" class="navbar-logo">Beautiful <span>Women</span></a>
+        <a href="index.html" class="navbar-logo">
+            <img src="images/logo-2.png?v=2.0" alt="Beautiful Women Logo" class="logo-img"><span class="logo-text"><span class="logo-text-orange">Beautiful</span><span class="logo-text-green">Women</span></span>
+        </a>
         <ul class="navbar-menu">
             <li><a href="index.html">Accueil</a></li>
             <li><a href="catalogue.html" class="active">Catalogue</a></li>
@@ -161,8 +163,8 @@
             <input type="text" id="search-input" placeholder="Rechercher..." />
         </div>
         <div class="navbar-actions">
-            <button class="nav-icon-btn"><i class="far fa-heart"></i></button>
-            <button class="nav-icon-btn" onclick="window.location='panier.html'">
+            <button class="nav-icon-btn" id="btn-favoris" title="Favoris" onclick="window.location='catalogue.html?favoris=1'"><i class="far fa-heart"></i></button>
+            <button class="nav-icon-btn" id="btn-panier" title="Panier" onclick="window.location='panier.html'">
                 <i class="fas fa-shopping-bag"></i>
                 <span class="badge" id="badge-panier">0</span>
             </button>
@@ -170,14 +172,38 @@
                 <a href="auth.html" class="btn btn-primary" style="padding:7px 12px; font-size:0.75rem; white-space:nowrap;">Se connecter</a>
                 <a href="auth.html?mode=register" class="btn btn-outline" style="padding:7px 12px; font-size:0.75rem; color:var(--orange); border-color:var(--orange); white-space:nowrap;">S'inscrire</a>
             </div>
+            <!-- Bouton hamburger mobile -->
+            <button class="navbar-hamburger" id="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </div>
 </nav>
+
+<!-- Menu mobile drawer -->
+<div class="mobile-menu" id="mobile-menu">
+    <a href="index.html"><i class="fas fa-home"></i> Accueil</a>
+    <a href="catalogue.html" class="active"><i class="fas fa-th-large"></i> Catalogue</a>
+    <a href="modeles.html"><i class="fas fa-tshirt"></i> Modèles</a>
+    <a href="index.html#vendeurs" onclick="closeMobileMenu()"><i class="fas fa-store"></i> Vendeurs</a>
+    <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+    <div class="mobile-auth-btns" id="mobile-auth-btns">
+        <a href="auth.html" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Connexion</a>
+        <a href="auth.html?mode=register" class="btn btn-vert"><i class="fas fa-user-plus"></i> S'inscrire</a>
+    </div>
+</div>
+
+<!-- Overlay pour filtres mobiles -->
+<div class="filters-overlay" onclick="toggleFilters()"></div>
 
 <div class="container">
     <div class="catalogue-layout">
         <!-- Sidebar Filtres -->
         <aside class="filters-sidebar">
+            <div class="sidebar-header" style="display: none; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid var(--creme-d); padding-bottom: 10px;">
+                <h3 style="color: var(--brun);">Filtres</h3>
+                <button onclick="toggleFilters()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--brun);"><i class="fas fa-times"></i></button>
+            </div>
             <div class="filter-group">
                 <h4>Catégories</h4>
                 <div class="filter-options" id="filter-categories">
@@ -192,7 +218,7 @@
                     <span>-</span>
                     <input type="number" id="price-max" placeholder="Max" />
                 </div>
-                <button class="btn btn-vert" style="width:100%; margin-top:15px; padding:8px;" onclick="appliquerFiltres()">
+                <button class="btn btn-vert" style="width:100%; margin-top:15px; padding:8px;" onclick="appliquerFiltres(); toggleFilters();">
                     Filtrer
                 </button>
             </div>
@@ -208,6 +234,9 @@
         <!-- Liste Produits -->
         <main>
             <header class="catalogue-header">
+                <button class="btn btn-outline mobile-filter-btn" onclick="toggleFilters()" style="padding: 6px 12px; font-size: 0.85rem; color: var(--brun); border-color: var(--creme-d);">
+                    <i class="fas fa-filter"></i> Filtrer
+                </button>
                 <div id="results-count">Chargement des produits...</div>
                 <div class="sort-group">
                     <label style="font-size: 0.85rem; color: var(--gris);">Trier par :</label>
@@ -249,11 +278,21 @@
 
 <div id="toast-container"></div>
 
-<script src="js/api.js?v=1.4"></script>
-<script src="js/panier.js?v=1.4"></script>
-<script src="js/ui.js?v=2.1"></script>
-<script src="js/catalogue.js?v=1.4"></script>
+<script src="js/api.js?v=2.4"></script>
+<script src="js/panier.js?v=1.5"></script>
+<script src="js/ui.js?v=2.3"></script>
+<script src="js/catalogue.js?v=2.5"></script>
 <script src="js/chatbot.js"></script>
+<script>
+function toggleFilters() {
+    const sidebar = document.querySelector('.filters-sidebar');
+    const overlay = document.querySelector('.filters-overlay');
+    if (sidebar && overlay) {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('open');
+    }
+}
+</script>
 </body>
 </html>
 

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Agent - Beautiful Women Support</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #e5ddd5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c8b99a' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* ── Fenêtre principale ── */
+        .wa-window {
+            width: 100%;
+            max-width: 480px;
+            height: 100vh;
+            max-height: 800px;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 40px rgba(0,0,0,0.25);
+            border-radius: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        @media (min-width: 520px) {
+            .wa-window { border-radius: 16px; height: 90vh; }
+        }
+
+        /* ── Header ── */
+        .wa-header {
+            background: #075e54;
+            color: white;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .wa-back {
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+        }
+        .wa-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        .wa-header-info { flex: 1; }
+        .wa-agent-name { font-size: 1rem; font-weight: 600; }
+        .wa-status {
+            font-size: 0.75rem;
+            color: #25d366;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .wa-status::before {
+            content: '';
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            background: #25d366;
+            border-radius: 50%;
+            animation: pulse-green 2s infinite;
+        }
+        @keyframes pulse-green {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.8); }
+        }
+        .wa-header-actions { display: flex; gap: 18px; color: rgba(255,255,255,0.8); font-size: 1.1rem; }
+
+        /* ── Zone de messages ── */
+        .wa-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            scroll-behavior: smooth;
+        }
+        .wa-messages::-webkit-scrollbar { width: 4px; }
+        .wa-messages::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+
+        /* Date séparateur */
+        .wa-date-sep {
+            text-align: center;
+            margin: 10px 0;
+        }
+        .wa-date-sep span {
+            background: rgba(255,255,255,0.85);
+            color: #667781;
+            font-size: 0.72rem;
+            padding: 4px 12px;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* Bulles de message */
+        .wa-msg {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            max-width: 80%;
+            animation: fadeInUp 0.3s ease;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .wa-msg.agent { align-self: flex-start; }
+        .wa-msg.user  { align-self: flex-end; flex-direction: row-reverse; }
+
+        .wa-bubble {
+            padding: 8px 12px 6px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            position: relative;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+            max-width: 100%;
+            word-break: break-word;
+        }
+        .wa-msg.agent .wa-bubble {
+            background: white;
+            color: #111;
+            border-top-left-radius: 2px;
+        }
+        .wa-msg.user .wa-bubble {
+            background: #dcf8c6;
+            color: #111;
+            border-top-right-radius: 2px;
+        }
+        .wa-time {
+            font-size: 0.65rem;
+            color: #999;
+            display: block;
+            text-align: right;
+            margin-top: 3px;
+        }
+        .wa-msg.agent .wa-time { text-align: left; }
+
+        /* Typing indicator */
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            align-items: center;
+            gap: 8px;
+            animation: fadeInUp 0.3s ease;
+        }
+        .typing-indicator.visible { display: flex; }
+        .typing-bubble {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border-top-left-radius: 2px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #aaa;
+            border-radius: 50%;
+            animation: typing 1.2s infinite;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-6px); opacity: 1; }
+        }
+
+        /* ── Suggestions rapides ── */
+        .wa-suggestions {
+            padding: 8px 12px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            border-top: 1px solid #f0f0f0;
+            background: #fafafa;
+        }
+        .wa-chip {
+            background: white;
+            border: 1.5px solid #25d366;
+            color: #075e54;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .wa-chip:hover {
+            background: #25d366;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* ── Input ── */
+        .wa-input-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: #f0f2f5;
+            border-top: 1px solid #e0e0e0;
+        }
+        .wa-input-box {
+            flex: 1;
+            background: white;
+            border: none;
+            border-radius: 24px;
+            padding: 10px 18px;
+            font-size: 0.95rem;
+            outline: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            font-family: inherit;
+            resize: none;
+            max-height: 100px;
+            line-height: 1.4;
+        }
+        .wa-send-btn {
+            width: 44px;
+            height: 44px;
+            background: #25d366;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .wa-send-btn:hover { background: #1ebe5d; transform: scale(1.05); }
+
+        /* Badge agent */
+        .agent-mini-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            color: white;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        /* Bandeau "Discuter avec agent réel" */
+        .wa-disclaimer {
+            background: #fff8e1;
+            padding: 8px 16px;
+            text-align: center;
+            font-size: 0.72rem;
+            color: #795548;
+            border-bottom: 1px solid #ffe0b2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .wa-disclaimer i { color: #f59e0b; }
+    </style>
+</head>
+<body>
+
+<div class="wa-window">
+
+    <!-- Header style WhatsApp -->
+    <div class="wa-header">
+        <a href="contact.html" class="wa-back" title="Retour">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <div class="wa-avatar">A</div>
+        <div class="wa-header-info">
+            <div class="wa-agent-name">Adjoua — Support Beautiful Women</div>
+            <div class="wa-status">En ligne maintenant</div>
+        </div>
+        <div class="wa-header-actions">
+            <i class="fas fa-video" title="Appel vidéo" style="cursor:pointer;"></i>
+            <i class="fas fa-phone" title="Appel" style="cursor:pointer;"></i>
+        </div>
+    </div>
+
+    <!-- Bandeau informatif -->
+    <div class="wa-disclaimer">
+        <i class="fas fa-lock"></i>
+        Discussion chiffrée avec votre agent Beautiful Women
+    </div>
+
+    <!-- Zone messages -->
+    <div class="wa-messages" id="wa-messages">
+        <div class="wa-date-sep"><span>Aujourd'hui</span></div>
+    </div>
+
+    <!-- Typing indicator -->
+    <div class="typing-indicator" id="typing">
+        <div class="agent-mini-avatar">A</div>
+        <div class="typing-bubble">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+        </div>
+    </div>
+
+    <!-- Suggestions rapides -->
+    <div class="wa-suggestions" id="wa-suggestions">
+        <div class="wa-chip" onclick="sendChip(this)">📦 Suivi de commande</div>
+        <div class="wa-chip" onclick="sendChip(this)">💳 Paiement</div>
+        <div class="wa-chip" onclick="sendChip(this)">🔄 Retour produit</div>
+        <div class="wa-chip" onclick="sendChip(this)">🤝 Devenir vendeur</div>
+        <div class="wa-chip" onclick="sendChip(this)">📞 Parler à un humain</div>
+    </div>
+
+    <!-- Barre d'envoi -->
+    <div class="wa-input-bar">
+        <textarea class="wa-input-box" id="wa-input" placeholder="Écrivez un message..." rows="1"
+            onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="wa-send-btn" onclick="sendMessage()" id="send-btn">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+
+</div>
+
+<script>
+// ── Données de l'agent ──────────────────────────────────────────
+const AGENT_NAME = 'Adjoua';
+
+const now = () => {
+    const d = new Date();
+    return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+};
+
+// ── Réponses simulées de l'agent ──────────────────────────────
+const RESPONSES = {
+    // Mots-clés → réponse
+    'commande': [
+        "📦 Pour suivre votre commande, donnez-moi votre numéro de commande (ex: BW-2025-XXXX) et je vous donne une mise à jour immédiate !",
+        "Je peux vérifier l'état de votre livraison. Quel est votre numéro de commande ?"
+    ],
+    'suivi': [
+        "📦 Pour suivre votre commande, donnez-moi votre numéro de commande (ex: BW-2025-XXXX) et je vous donne une mise à jour immédiate !"
+    ],
+    'livraison': [
+        "🚚 Nos délais de livraison sont de 1 à 3 jours ouvrables à Abidjan, et 3 à 7 jours pour les autres villes de Côte d'Ivoire. Avez-vous une commande en cours ?"
+    ],
+    'paiement': [
+        "💳 Nous acceptons les paiements par :\n• Mobile Money (Orange, MTN, Wave)\n• Carte bancaire (Visa/Mastercard)\n• Paiement à la livraison\n\nQuel problème rencontrez-vous avec votre paiement ?"
+    ],
+    'retour': [
+        "🔄 Notre politique de retour est simple : vous avez *7 jours* après réception pour retourner un article. Il doit être dans son état d'origine. Je peux initier la procédure pour vous. Quel article souhaitez-vous retourner ?"
+    ],
+    'remboursement': [
+        "💰 Les remboursements sont traités sous 3 à 5 jours ouvrables après réception de l'article retourné. Souhaitez-vous que j'initie une demande de remboursement ?"
+    ],
+    'vendeur': [
+        "🤝 Devenir vendeur sur Beautiful Women, c'est simple ! Voici les étapes :\n1. Créez un compte vendeur sur notre site\n2. Soumettez votre boutique (nom + localisation)\n3. Commencez à publier vos produits !\n\nVoulez-vous que je vous guide pas à pas ?"
+    ],
+    'humain': [
+        "📞 Bien sûr ! Je vous mets en relation avec un agent humain. Notre équipe est disponible *lundi–samedi de 8h à 19h*.\n\n📱 Appelez-nous : +225 01 02 03 04 05\n📧 Email : support@beautifulwomen.ci\n\nEst-ce que je peux faire autre chose pour vous en attendant ?"
+    ],
+    'bonjour': [
+        "👋 Bonjour ! Je suis *Adjoua*, votre assistante Beautiful Women. Comment puis-je vous aider aujourd'hui ?\n\n• 📦 Suivi de commande\n• 💳 Problème de paiement\n• 🔄 Retour / remboursement\n• 🤝 Devenir vendeur"
+    ],
+    'merci': [
+        "🌺 Avec plaisir ! N'hésitez pas si vous avez d'autres questions. Belle journée ! 😊"
+    ],
+    'prix': [
+        "💰 Nos prix varient selon les produits. Consultez notre catalogue pour voir tous les articles disponibles. Cherchez-vous un type de pagne en particulier ?"
+    ],
+    'pagne': [
+        "🌺 Nous proposons une large gamme de pagnes africains : Wax, Kente, Bogolan, et bien d'autres ! Voulez-vous voir notre catalogue ou avez-vous une question spécifique ?"
+    ],
+    'default': [
+        "Je comprends votre demande. Laissez-moi vérifier ça pour vous... 🔍\n\nPuis-je vous demander quelques précisions pour mieux vous aider ?",
+        "Merci pour votre message ! 😊 Notre équipe traite votre demande en priorité. Avez-vous d'autres informations à ajouter ?",
+        "Je prends note de votre demande. Pour vous aider plus rapidement, pouvez-vous préciser le numéro de votre commande ou votre email enregistré ?"
+    ]
+};
+
+function getResponse(text) {
+    const t = text.toLowerCase();
+    for (const [key, arr] of Object.entries(RESPONSES)) {
+        if (key !== 'default' && t.includes(key)) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+    }
+    const def = RESPONSES.default;
+    return def[Math.floor(Math.random() * def.length)];
+}
+
+// ── Affichage des bulles ──────────────────────────────────────
+function addMessage(text, type) {
+    const container = document.getElementById('wa-messages');
+    const wrapper = document.createElement('div');
+    wrapper.className = `wa-msg ${type}`;
+
+    let avatarHtml = '';
+    if (type === 'agent') {
+        avatarHtml = `<div class="agent-mini-avatar">A</div>`;
+    }
+
+    // Convertir *texte* en <strong>
+    const html = text.replace(/\*(.*?)\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+
+    wrapper.innerHTML = `
+        ${avatarHtml}
+        <div class="wa-bubble">
+            ${html}
+            <span class="wa-time">${now()} ${type === 'user' ? '✓✓' : ''}</span>
+        </div>
+    `;
+    container.appendChild(wrapper);
+    container.scrollTop = container.scrollHeight;
+}
+
+function showTyping() {
+    document.getElementById('typing').classList.add('visible');
+    const msgs = document.getElementById('wa-messages');
+    msgs.scrollTop = msgs.scrollHeight;
+}
+
+function hideTyping() {
+    document.getElementById('typing').classList.remove('visible');
+}
+
+// ── Envoi d'un message utilisateur ────────────────────────────
+function sendMessage() {
+    const input = document.getElementById('wa-input');
+    const text = input.value.trim();
+    if (!text) return;
+
+    addMessage(text, 'user');
+    input.value = '';
+    input.style.height = 'auto';
+
+    // Masquer les suggestions après le 1er message
+    document.getElementById('wa-suggestions').style.display = 'none';
+
+    // Simuler la frappe de l'agent
+    const delay = 800 + Math.random() * 1200;
+    showTyping();
+    setTimeout(() => {
+        hideTyping();
+        addMessage(getResponse(text), 'agent');
+    }, delay);
+}
+
+function sendChip(el) {
+    const text = el.textContent.trim();
+    document.getElementById('wa-input').value = text;
+    sendMessage();
+}
+
+function handleKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+}
+
+function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+
+// ── Message de bienvenue automatique ──────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        showTyping();
+        setTimeout(() => {
+            hideTyping();
+            addMessage("👋 Bonjour ! Je suis *Adjoua*, votre assistante Beautiful Women 🌺\n\nComment puis-je vous aider aujourd'hui ?", 'agent');
+        }, 1200);
+    }, 600);
+});
+</script>
+
+</body>
+</html>

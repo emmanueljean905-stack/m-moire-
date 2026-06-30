@@ -3,26 +3,43 @@
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Vérifier si retour d'un paiement démo réussi
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('demo_success') === '1') {
         toast('🎉 Paiement simulé avec succès ! Voici vos commandes.', 'succes');
     }
 
-    // Auth Guard
     if (!session.estConnecte()) {
         toast('Veuillez vous connecter pour accéder à votre profil', 'erreur');
         setTimeout(() => window.location.href = 'auth.html', 2000);
         return;
     }
 
-    // Charger les données initiales
-    await Promise.all([
-        chargerInfosUser(),
-        chargerCommandes(),
-        chargerFavoris()
-    ]);
+    await Promise.all([chargerInfosUser(), chargerCommandes(), chargerFavoris()]);
+
+    // ── Listener temps réel : le vendeur a lancé une simulation ──
+    // Quand lancerSimulationLivraison() écrit dans localStorage depuis l'onglet vendeur,
+    // cet événement se déclenche dans l'onglet client et met à jour le suivi.
+    window.addEventListener('storage', (e) => {
+        if (e.key && e.key.startsWith('tracking_bw_')) {
+            const orderId = e.key.replace('tracking_bw_', '');
+            const data = JSON.parse(e.newValue || '{}');
+            if (data.currentStep) {
+                // Mettre à jour le bandeau de statut si le modal de suivi est ouvert
+                const overlay = document.getElementById('simul-status-overlay');
+                const statusEl = document.getElementById('simul-status-text');
+                const progressFill = document.getElementById('track-progress-fill');
+                if (overlay && statusEl) {
+                    overlay.style.display = 'block';
+                    statusEl.innerHTML = `<strong>${data.currentStep.status}</strong> — ${data.currentStep.desc}`;
+                    if (progressFill) progressFill.style.width = data.currentStep.progress + '%';
+                }
+                // Toast de notification pour le client
+                toast(`📦 ${data.currentStep.status} : ${data.currentStep.desc}`, 'succes');
+            }
+        }
+    });
 });
+
 
 /** Changer de section (Tabs) */
 function switchSection(id, btn) {
@@ -99,6 +116,11 @@ async function chargerCommandes() {
                                 ${['en_attente', 'payee'].includes(c.statut) ? `
                                     <button class="btn btn-outline" style="padding:5px 10px; font-size:0.75rem; color:var(--rouge); border-color:var(--rouge);" onclick="annulerCommande(${c.id})">
                                         <i class="fas fa-times"></i> Annuler
+                                    </button>
+                                ` : ''}
+                                ${c.statut !== 'annulee' ? `
+                                    <button class="btn btn-outline" style="padding:5px 10px; font-size:0.75rem; color:var(--orange); border-color:var(--orange);" onclick="ouvrirSignalementLitige(${c.id})">
+                                        <i class="fas fa-exclamation-triangle"></i> Signaler
                                     </button>
                                 ` : ''}
                             </div>
@@ -338,7 +360,7 @@ async function uploadAvatar(input) {
     if (!input.files || !input.files[0]) return;
     const formData = new FormData();
     formData.append('image', input.files[0]);
-    const res = await api.post('/upload', formData, true);
+    const res = await api.post('/upload', formData);
     if (res.ok) {
         const photoUrl = res.data.url;
         await api.put('/auth/profil', { photo: photoUrl });
@@ -358,3 +380,40 @@ window.uploadAvatar = uploadAvatar;
 window.ouvrirSuivi = ouvrirSuivi;
 window.fermerTracking = fermerTracking;
 window.annulerCommande = annulerCommande;
+
+function ouvrirSignalementLitige(id) {
+    document.getElementById('litige-order-id').value = id;
+    document.getElementById('litige-order-display').value = `#BW-${id}`;
+    document.getElementById('litige-description').value = '';
+    document.getElementById('litige-modal').style.display = 'flex';
+}
+
+function fermerLitigeModal() {
+    document.getElementById('litige-modal').style.display = 'none';
+}
+
+async function declarerLitige(e) {
+    e.preventDefault();
+    const id = document.getElementById('litige-order-id').value;
+    const description = document.getElementById('litige-description').value;
+
+    const btn = e.target.querySelector('button[type="submit"]');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
+
+    const res = await api.post(`/commandes/${id}/litige`, { description });
+    if (res.ok) {
+        toast(res.data.message || 'Réclamation enregistrée !', 'succes');
+        fermerLitigeModal();
+    } else {
+        toast(res.data.message || 'Erreur lors du signalement.', 'erreur');
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+}
+
+window.ouvrirSignalementLitige = ouvrirSignalementLitige;
+window.fermerLitigeModal = fermerLitigeModal;
+window.declarerLitige = declarerLitige;

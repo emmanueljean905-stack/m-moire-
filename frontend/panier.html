@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Panier - Beautiful Women</title>
-    <link rel="stylesheet" href="css/style.css?v=2.0">
+    <link rel="stylesheet" href="css/style.css?v=2.7">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
@@ -274,19 +274,39 @@
 
 <nav class="navbar" id="navbar">
     <div class="navbar-inner">
-        <a href="index.html" class="navbar-logo">Beautiful <span>Women</span></a>
+        <a href="index.html" class="navbar-logo">
+            <img src="images/logo-2.png?v=2.0" alt="Beautiful Women Logo" class="logo-img"><span class="logo-text"><span class="logo-text-orange">Beautiful</span><span class="logo-text-green">Women</span></span>
+        </a>
         <ul class="navbar-menu">
             <li><a href="index.html">Accueil</a></li>
             <li><a href="catalogue.html">Catalogue</a></li>
         </ul>
         <div class="navbar-actions">
+            <button class="nav-icon-btn" id="btn-favoris" title="Favoris" onclick="window.location='catalogue.html?favoris=1'"><i class="far fa-heart"></i></button>
             <div id="nav-auth" style="display:flex; gap:8px; align-items:center; flex-shrink:0;">
                 <a href="auth.html" class="btn btn-primary" style="padding:7px 12px; font-size:0.75rem; white-space:nowrap;">Se connecter</a>
                 <a href="auth.html?mode=register" class="btn btn-outline" style="padding:7px 12px; font-size:0.75rem; color:var(--orange); border-color:var(--orange); white-space:nowrap;">S'inscrire</a>
             </div>
+            <!-- Bouton hamburger mobile -->
+            <button class="navbar-hamburger" id="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </div>
 </nav>
+
+<!-- Menu mobile drawer -->
+<div class="mobile-menu" id="mobile-menu">
+    <a href="index.html"><i class="fas fa-home"></i> Accueil</a>
+    <a href="catalogue.html"><i class="fas fa-th-large"></i> Catalogue</a>
+    <a href="modeles.html"><i class="fas fa-tshirt"></i> Modèles</a>
+    <a href="index.html#vendeurs" onclick="closeMobileMenu()"><i class="fas fa-store"></i> Vendeurs</a>
+    <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+    <div class="mobile-auth-btns" id="mobile-auth-btns">
+        <a href="auth.html" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Connexion</a>
+        <a href="auth.html?mode=register" class="btn btn-vert"><i class="fas fa-user-plus"></i> S'inscrire</a>
+    </div>
+</div>
 
 <div class="container">
     <div id="cart-container" class="cart-page-grid">
@@ -307,9 +327,9 @@
 
 <script src="https://checkout.cinetpay.com/sdk/v1/cinetpay.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="js/api.js"></script>
+<script src="js/api.js?v=2.3"></script>
 <script src="js/panier.js"></script>
-<script src="js/ui.js?v=2.1"></script>
+<script src="js/ui.js?v=2.2"></script>
 <script src="js/panier-page.js"></script>
 
 <script src="js/chatbot.js"></script>

@@ -1,10 +1,20 @@
 // ============================================================
-// BEAUTIFUL WOMEN - Assistant IA "Adjoua"
+// BEAUTIFUL WOMEN - Assistant IA "Adjoua" (chatbot.js)
+// Rôle : Implémenter un agent conversationnel (chatbot) d'aide à la
+//        clientèle nommé "Adjoua". Il fonctionne de manière autonome
+//        au sein d'un module JavaScript (pattern IIFE). Il s'initialise
+//        seul, injecte ses styles CSS et son code HTML dans la page,
+//        et interagit en analysant les mots-clés du visiteur.
 // ============================================================
 
 const Chatbot = (() => {
 
-    // --- BASE DE CONNAISSANCES ---
+    // ── BASE DE CONNAISSANCES LOCALE (KB) ─────────────────────────
+    // Dictionnaire structurant les thématiques de support.
+    // Chaque clé comprend :
+    // - patterns : Liste de mots-clés surveillés pour déclencher cette réponse (sans accents/majuscules).
+    // - responses : Liste de réponses potentielles choisies aléatoirement pour simuler du naturel.
+    // - suggestions : Boutons d'actions rapides proposés au visiteur après la réponse.
     const KB = {
         salutations: {
             patterns: ['bonjour','bonsoir','salut','hello','hi','bonne nuit','coucou','yo','hey','bjr','bsr','slt'],
@@ -97,23 +107,43 @@ const Chatbot = (() => {
         }
     };
 
-    // --- LOGIQUE DE RÉPONSE ---
+    // ── LOGIQUE D'ANALYSE SÉMANTIQUE DES QUESTIONS ────────────────
+    /**
+     * Analyse le message de l'utilisateur pour trouver une réponse adaptée.
+     * Pour maximiser les chances de correspondance :
+     * 1. Convertit en minuscules.
+     * 2. Supprime les accents (Normalisation Unicode NFD).
+     * 
+     * @param {String} message - Entrée utilisateur
+     * @returns {Object} { text: "réponse", suggestions: [] }
+     */
     function getResponse(message) {
+        // Normaliser le message (ex: "Délais de livraison" -> "delais de livraison")
         const msg = message.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         
+        // Parcourir toutes les thématiques de la Base de Connaissances
         for (const [key, data] of Object.entries(KB)) {
-            if (key === 'inconnu') continue;
+            if (key === 'inconnu') continue; // Ignorer la clé par défaut
+            // Vérifier si au moins un des motifs (patterns) est présent dans la question
             if (data.patterns && data.patterns.some(p => msg.includes(p))) {
                 const resp = data.responses[Math.floor(Math.random() * data.responses.length)];
                 return { text: resp, suggestions: data.suggestions || [] };
             }
         }
         
+        // Si aucune correspondance n'est identifiée, renvoyer une réponse par défaut
         const resp = KB.inconnu.responses[Math.floor(Math.random() * KB.inconnu.responses.length)];
         return { text: resp, suggestions: KB.inconnu.suggestions || [] };
     }
 
-    // --- RENDU MARKDOWN SIMPLE ---
+    // ── COMPILATION DES BALISES MARKDOWN BASIQUES ──────────────────
+    /**
+     * Convertit la syntaxe markdown standard (**bold**, *italic*, [lien](url))
+     * en balises HTML interprétables par le navigateur.
+     * 
+     * @param {String} text - Contenu brut de la réponse
+     * @returns {String} HTML formaté
+     */
     function renderMarkdown(text) {
         return text
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
@@ -122,10 +152,15 @@ const Chatbot = (() => {
             .replace(/\n/g, '<br>');
     }
 
-    // --- INTERFACE CHAT ---
-    let isOpen = false;
-    let isTyping = false;
+    // ── ETAT INTERNE DE L'INTERFACE UTILISATEUR ──────────────────
+    let isOpen = false;     // Statut du chat (ouvert/fermé)
+    let isTyping = false;   // Statut de l'indicateur d'écriture
 
+    // ── CRÉATION ET INJECTION DYNAMIQUE DU CHAT (HTML/CSS) ────────
+    /**
+     * Injecte les styles CSS nécessaires dans le head, et génère le
+     * code HTML des boutons flottants et fenêtres de chat au bas de la page.
+     */
     function createUI() {
         const css = `
         #bw-chatbot-btn {
@@ -281,10 +316,11 @@ const Chatbot = (() => {
         </div>
         `);
 
-        bindEvents();
-        setTimeout(() => showWelcome(), 600);
+        bindEvents(); // Lier les contrôles d'événements JavaScript (clics, touches)
+        setTimeout(() => showWelcome(), 600); // Déclencher le message de bienvenue avec un léger retard
     }
 
+    /** Message de bienvenue initial */
     function showWelcome() {
         const hour = new Date().getHours();
         let greeting = hour < 12 ? "Bonjour" : hour < 18 ? "Bon après-midi" : "Bonsoir";
@@ -294,11 +330,19 @@ const Chatbot = (() => {
         );
     }
 
+    // ── EXPÉDITION DES MESSAGES DE L'AGENT Conversationnel ─────────
+    /**
+     * Simule la réflexion de l'agent en affichant un indicateur d'écriture
+     * animé (typing dots), puis insère la réponse textuelle compilée.
+     * 
+     * @param {String} text - Contenu à afficher
+     * @param {Array} suggestions - Liste de boutons de suggestions
+     */
     function addBotMessage(text, suggestions = []) {
         const msgs = document.getElementById('bw-chat-messages');
         if (!msgs) return;
 
-        // Typing indicator
+        // Créer un identifiant temporaire pour l'indicateur d'écriture
         const typingId = 'typing_' + Date.now();
         msgs.insertAdjacentHTML('beforeend', `
             <div class="bw-msg bot" id="${typingId}">
@@ -306,12 +350,14 @@ const Chatbot = (() => {
                 <div class="bw-bubble bw-typing"><span></span><span></span><span></span></div>
             </div>
         `);
-        msgs.scrollTop = msgs.scrollHeight;
+        msgs.scrollTop = msgs.scrollHeight; // Ajustement du scroll au bas de la fenêtre
 
+        // Simulation du temps de réponse (aléatoire entre 0.9s et 1.4s)
         setTimeout(() => {
             const typing = document.getElementById(typingId);
-            if (typing) typing.remove();
+            if (typing) typing.remove(); // Destruction de l'indicateur d'écriture
 
+            // Insertion de la bulle de message finalisée
             msgs.insertAdjacentHTML('beforeend', `
                 <div class="bw-msg bot">
                     <div class="bw-msg-avatar">🌺</div>
@@ -319,10 +365,11 @@ const Chatbot = (() => {
                 </div>
             `);
             msgs.scrollTop = msgs.scrollHeight;
-            renderSuggestions(suggestions);
+            renderSuggestions(suggestions); // Affichage des suggestions associées
         }, 900 + Math.random() * 500);
     }
 
+    /** Injection d'une bulle de message rédigée par l'utilisateur */
     function addUserMessage(text) {
         const msgs = document.getElementById('bw-chat-messages');
         if (!msgs) return;
@@ -335,23 +382,31 @@ const Chatbot = (() => {
         msgs.scrollTop = msgs.scrollHeight;
     }
 
+    /** Affiche les puces de suggestions interactives */
     function renderSuggestions(suggestions) {
         const container = document.getElementById('bw-chat-suggestions');
         if (!container) return;
         container.innerHTML = suggestions.map(s =>
-            `<button class="bw-suggestion" onclick="Chatbot.sendSuggestion('${s.replace(/'/g, "\\'")}')">${s}</button>`
+            `<button class="bw-suggestion" onclick="window.Chatbot.sendSuggestion('${s.replace(/'/g, "\\'")}')">${s}</button>`
         ).join('');
     }
 
+    /** Traite l'envoi d'une question, bloque l'écriture et appelle le moteur de réponses */
     function send(message) {
         if (!message.trim() || isTyping) return;
         addUserMessage(message);
+
+        // Vider immédiatement les suggestions pour éviter les clics multiples incohérents pendant que l'IA réfléchit
+        const container = document.getElementById('bw-chat-suggestions');
+        if (container) container.innerHTML = '';
+
         const response = getResponse(message);
         isTyping = true;
         addBotMessage(response.text, response.suggestions);
-        setTimeout(() => { isTyping = false; }, 1600);
+        setTimeout(() => { isTyping = false; }, 1600); // Déverrouillage après émission
     }
 
+    /** Attache les écouteurs d'événements du DOM (clics sur boutons et pression de la touche Entrée) */
     function bindEvents() {
         document.getElementById('bw-chatbot-btn').addEventListener('click', toggle);
         document.getElementById('bw-chat-close').addEventListener('click', close);
@@ -367,6 +422,7 @@ const Chatbot = (() => {
         });
     }
 
+    // ── CONTRÔLES D'OUVERTURE ET FERMETURE ───────────────────────
     function toggle() {
         isOpen ? close() : open();
     }
@@ -377,8 +433,8 @@ const Chatbot = (() => {
         const notif = document.getElementById('bw-chatbot-notif');
         const btn = document.getElementById('bw-chatbot-btn');
         win.style.display = 'flex';
-        if (notif) notif.style.display = 'none';
-        btn.querySelector('i').className = 'fas fa-times';
+        if (notif) notif.style.display = 'none'; // Masquer la pastille rouge de notification
+        btn.querySelector('i').className = 'fas fa-times'; // Transforme l'icône bulle en croix de fermeture
     }
 
     function close() {
@@ -386,10 +442,10 @@ const Chatbot = (() => {
         const win = document.getElementById('bw-chatbot-window');
         const btn = document.getElementById('bw-chatbot-btn');
         win.style.display = 'none';
-        btn.querySelector('i').className = 'fas fa-comment-dots';
+        btn.querySelector('i').className = 'fas fa-comment-dots'; // Rétablit l'icône de bulle
     }
 
-    // Public
+    // Exportation publique des API du module chatbot
     return {
         init: () => {
             if (document.readyState === 'loading') {
@@ -401,10 +457,13 @@ const Chatbot = (() => {
         sendSuggestion: (text) => {
             send(text);
             const input = document.getElementById('bw-chat-input');
-            if (input) input.focus();
+            if (input) input.focus(); // Repositionne le focus d'écriture
         }
     };
 })();
 
-// Auto-init
+// Exposer globalement pour permettre l'exécution des handlers inline (ex: onclick dans le HTML dynamique)
+window.Chatbot = Chatbot;
+
+// Initialisation automatique du module
 Chatbot.init();

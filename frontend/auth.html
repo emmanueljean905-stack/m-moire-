@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion / Inscription - Beautiful Women</title>
-    <link rel="stylesheet" href="css/style.css?v=2.0">
+    <link rel="stylesheet" href="css/style.css?v=2.7">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
@@ -203,14 +203,33 @@
 
 <nav class="navbar" id="navbar">
     <div class="navbar-inner">
-        <a href="index.html" class="navbar-logo">Beautiful <span>Women</span></a>
+        <a href="index.html" class="navbar-logo">
+            <img src="images/logo-2.png?v=2.0" alt="Beautiful Women Logo" class="logo-img"><span class="logo-text"><span class="logo-text-orange">Beautiful</span><span class="logo-text-green">Women</span></span>
+        </a>
         <div class="navbar-actions">
-            <a href="index.html" style="font-size:0.9rem; font-weight:600; color:var(--brun)">
-                <i class="fas fa-arrow-left"></i> Retour à l'accueil
+            <a href="index.html" style="font-size:0.9rem; font-weight:600; color:var(--brun); display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-arrow-left"></i> <span class="hide-mobile">Retour à l'accueil</span>
             </a>
+            <!-- Bouton hamburger mobile -->
+            <button class="navbar-hamburger" id="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </div>
 </nav>
+
+<!-- Menu mobile drawer -->
+<div class="mobile-menu" id="mobile-menu">
+    <a href="index.html"><i class="fas fa-home"></i> Accueil</a>
+    <a href="catalogue.html"><i class="fas fa-th-large"></i> Catalogue</a>
+    <a href="modeles.html"><i class="fas fa-tshirt"></i> Modèles</a>
+    <a href="index.html#vendeurs" onclick="closeMobileMenu()"><i class="fas fa-store"></i> Vendeurs</a>
+    <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+    <div class="mobile-auth-btns" id="mobile-auth-btns">
+        <a href="auth.html" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Connexion</a>
+        <a href="auth.html?mode=register" class="btn btn-vert"><i class="fas fa-user-plus"></i> S'inscrire</a>
+    </div>
+</div>
 
 <div class="auth-page">
     <div class="auth-card">
@@ -323,8 +342,9 @@
 
 <div id="toast-container"></div>
 
-<script src="js/api.js"></script>
-<script src="js/ui.js?v=2.1"></script>
+<script src="js/api.js?v=2.3"></script>
+<script src="js/panier.js?v=2.1"></script>
+<script src="js/ui.js?v=2.2"></script>
 <script src="js/auth.js"></script>
 
 <script src="js/chatbot.js"></script>

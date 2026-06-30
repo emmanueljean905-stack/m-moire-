@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Vendeur - Beautiful Women</title>
-    <link rel="stylesheet" href="css/style.css?v=2.0">
+    <link rel="stylesheet" href="css/style.css?v=2.7">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
@@ -786,13 +786,27 @@
             background: var(--blanc);
             box-shadow: 0 0 0 4px rgba(232,119,34,0.05);
         }
+
+        /* Bouton Déconnexion sidebar */
+        #btn-deconnexion:hover {
+            background: rgba(239, 68, 68, 0.15) !important;
+            color: #ff6b6b !important;
+            border-left-color: #ef4444 !important;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
     </style>
 </head>
 <body>
 
 <nav class="navbar" style="background: var(--brun); border-bottom: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
     <div class="navbar-inner">
-        <a href="index.html" class="navbar-logo" style="color:var(--blanc)">Beautiful <span style="color:var(--or)">Women</span></a>
+        <a href="index.html" class="navbar-logo">
+            <img src="images/logo-2.png?v=2.0" alt="Beautiful Women Logo" class="logo-img"><span class="logo-text"><span class="logo-text-orange">Beautiful</span><span class="logo-text-green">Women</span></span>
+        </a>
         <div class="navbar-actions">
             <!-- Badge Utilisateur Connecté -->
             <div class="user-profile-badge" id="nav-user-badge">
@@ -802,10 +816,6 @@
                     <span class="user-role">Vendeur Certifié</span>
                 </div>
             </div>
-            
-            <button onclick="session.deconnecter()" class="nav-icon-btn" style="color:rgba(255,255,255,0.8); margin-left:10px;" title="Quitter le dashboard">
-                <i class="fas fa-sign-out-alt"></i>
-            </button>
         </div>
     </div>
 </nav>
@@ -834,6 +844,20 @@
         <div class="sidebar-btn" onclick="switchSection('boutique', this)">
             <i class="fas fa-store"></i> Ma Boutique
         </div>
+
+        <!-- Séparateur -->
+        <div style="margin: 12px 20px; border-top: 1px solid rgba(255,255,255,0.08);"></div>
+
+        <!-- Bouton Déconnexion -->
+        <div id="btn-deconnexion"
+             onclick="localStorage.removeItem('bw_token'); localStorage.removeItem('bw_user'); window.location.href='index.html';"
+             style="padding:15px 25px; display:flex; align-items:center; gap:12px; cursor:pointer;
+                    color:rgba(255,120,120,0.9); font-weight:600; font-size:0.92rem;
+                    border-left:3px solid transparent; transition:all 0.2s; user-select:none;"
+             onmouseenter="this.style.background='rgba(239,68,68,0.15)'; this.style.borderLeftColor='#ef4444'; this.style.color='#ff8080';"
+             onmouseleave="this.style.background=''; this.style.borderLeftColor='transparent'; this.style.color='rgba(255,120,120,0.9)';">
+            <i class="fas fa-sign-out-alt" style="width:20px; text-align:center;"></i> D&eacute;connexion
+        </div>
         
         <div style="margin-top:auto; padding:20px;">
             <a href="index.html" class="btn btn-vert" style="width:100%; text-align:center;">
@@ -842,8 +866,11 @@
         </div>
     </aside>
 
+
     <!-- Main Content -->
     <main class="dashboard-main">
+        <!-- Bannière d'avertissement de validation -->
+        <div id="validation-warning-banner"></div>
         
         <!-- Tab: Dashboard Overview -->
         <section id="sec-dashboard" class="content-section active">
@@ -1086,12 +1113,12 @@
 
 <div id="toast-container"></div>
 
-<script src="js/api.js"></script>
-<script src="js/panier.js"></script>
-<script src="js/ui.js?v=2.1"></script>
-<script src="js/vendeur-dashboard.js"></script>
-
+<script src="js/api.js?v=2.4"></script>
+<script src="js/panier.js?v=1.5"></script>
+<script src="js/ui.js?v=2.3"></script>
+<script src="js/vendeur-dashboard.js?v=2.1"></script>
 <script src="js/chatbot.js"></script>
 </body>
 </html>
+
 

@@ -1,4 +1,4 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -13,7 +13,7 @@
     </style>
 </head>
 <body>
-    <h1>Diagnostic des Images üîç</h1>
+    <h1>Diagnostic des Images ??</h1>
     
     <div class="test-box">
         <h3>1. Configuration de l'URL Backend</h3>
@@ -34,14 +34,14 @@
         </div>
     </div>
 
-    <script src="js/api.js"></script>
+    <script src="js/api.js?v=2.3"></script>
     <script>
         async function runDiagnostic() {
             // Test 1: URL
             const backendUrl = getBackendUrl();
             document.getElementById('url-info').innerHTML = `
-                Votre URL backend d√©tect√©e est : <strong>${backendUrl}</strong><br>
-                <em>(Si vous voyez localhost et que vous utilisez un t√©l√©phone, √ßa ne marchera pas)</em>
+                Votre URL backend dÈtectÈe est : <strong>${backendUrl}</strong><br>
+                <em>(Si vous voyez localhost et que vous utilisez un tÈlÈphone, Áa ne marchera pas)</em>
             `;
 
             // Test 2: API
@@ -49,13 +49,13 @@
                 const res = await fetch(`${backendUrl}/api/health`);
                 if (res.ok) {
                     const data = await res.json();
-                    document.getElementById('api-status').innerHTML = '<span class="success">‚úÖ Connect√© au Backend !</span>';
+                    document.getElementById('api-status').innerHTML = '<span class="success">? ConnectÈ au Backend !</span>';
                     document.getElementById('api-response').textContent = JSON.stringify(data, null, 2);
                 } else {
-                    document.getElementById('api-status').innerHTML = `<span class="error">‚ùå Erreur API (${res.status})</span>`;
+                    document.getElementById('api-status').innerHTML = `<span class="error">? Erreur API (${res.status})</span>`;
                 }
             } catch (err) {
-                document.getElementById('api-status').innerHTML = `<span class="error">‚ùå Impossible de contacter le serveur (${err.message}).</span><br>Assurez-vous que <code>npm run demo</code> est lanc√© dans le dossier backend.`;
+                document.getElementById('api-status').innerHTML = `<span class="error">? Impossible de contacter le serveur (${err.message}).</span><br>Assurez-vous que <code>npm run demo</code> est lancÈ dans le dossier backend.`;
             }
 
             // Test 3: Image
@@ -63,16 +63,16 @@
             const img = new Image();
             img.onload = () => {
                 document.getElementById('img-container').innerHTML = `
-                    <span class="success">‚úÖ Image charg√©e avec succ√®s !</span><br>
+                    <span class="success">? Image chargÈe avec succËs !</span><br>
                     <img src="${imgPath}" alt="Test">
-                    <p>URL test√©e : ${imgPath}</p>
+                    <p>URL testÈe : ${imgPath}</p>
                 `;
             };
             img.onerror = () => {
                 document.getElementById('img-container').innerHTML = `
-                    <span class="error">‚ùå √âchec du chargement de l'image.</span><br>
-                    <p>URL test√©e : ${imgPath}</p>
-                    <p>Conseil : Ouvrez cette URL directement dans un nouvel onglet pour voir l'erreur pr√©cise.</p>
+                    <span class="error">? …chec du chargement de l'image.</span><br>
+                    <p>URL testÈe : ${imgPath}</p>
+                    <p>Conseil : Ouvrez cette URL directement dans un nouvel onglet pour voir l'erreur prÈcise.</p>
                 `;
             };
             img.src = imgPath;

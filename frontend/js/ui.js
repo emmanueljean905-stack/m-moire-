@@ -72,12 +72,9 @@ function majNavbarAuth() {
     if (user) {
         navAuth.innerHTML = `
             <div class="user-logged-nav">
-                <a href="${user.role === 'vendeur' ? 'vendeur-dashboard.html' : 'profil.html'}" class="user-nav-link">
-                    <i class="fas fa-user-circle"></i> <span>Mon Compte</span>
+                <a href="${user.role === 'vendeur' ? 'vendeur-dashboard.html' : (user.role === 'admin' ? 'admin-dashboard.html' : 'profil.html')}" class="user-nav-link">
+                     <i class="fas fa-user-circle"></i> <span>Mon Compte</span>
                 </a>
-                <button onclick="session.deconnecter()" class="nav-icon-btn logout-btn" title="Déconnexion">
-                    <i class="fas fa-sign-out-alt"></i>
-                </button>
             </div>
         `;
     }
@@ -111,7 +108,48 @@ window.addEventListener('error', function(e) {
 document.addEventListener('DOMContentLoaded', () => {
     majNavbarAuth();
     initScrollReveal();
+
+    // Mettre à jour les boutons du menu mobile selon la session
+    const mobileAuthDiv = document.getElementById('mobile-auth-btns');
+    if (mobileAuthDiv && typeof session !== 'undefined' && session && session.estConnecte()) {
+        const user = session.getUser();
+        const dest = user.role === 'vendeur' ? 'vendeur-dashboard.html' : user.role === 'admin' ? 'admin-dashboard.html' : 'profil.html';
+        mobileAuthDiv.innerHTML = `
+            <a href="${dest}" class="btn btn-primary" style="flex:1; justify-content:center;">
+                <i class="fas fa-user"></i> Mon espace
+            </a>
+            <button class="btn btn-outline" onclick="session.deconnecter()" style="flex:1; color:var(--orange); border-color:var(--orange);">
+                <i class="fas fa-sign-out-alt"></i> Déconnexion
+            </button>`;
+    }
+
+    // Fermer le menu mobile si on clique en dehors
+    document.addEventListener('click', (e) => {
+        const menu = document.getElementById('mobile-menu');
+        const btn = document.getElementById('hamburger-btn');
+        if (menu && menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) {
+            closeMobileMenu();
+        }
+    });
 });
+
+// === MENU HAMBURGER MOBILE ===
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const btn = document.getElementById('hamburger-btn');
+    if (menu && btn) {
+        menu.classList.toggle('open');
+        btn.classList.toggle('open');
+    }
+}
+function closeMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const btn = document.getElementById('hamburger-btn');
+    if (menu && btn) {
+        menu.classList.remove('open');
+        btn.classList.remove('open');
+    }
+}
 
 // ABONNEMENT NEWSLETTER
 async function abonnerNewsletter(e) {
@@ -157,4 +195,6 @@ window.majNavbarAuth    = majNavbarAuth;
 window.initScrollReveal = initScrollReveal;
 window.abonnerNewsletter = abonnerNewsletter;
 window.handleContactForm = handleContactForm;
+window.toggleMobileMenu  = toggleMobileMenu;
+window.closeMobileMenu   = closeMobileMenu;
 // (L'assistant Adjoua est chargé via js/chatbot.js)

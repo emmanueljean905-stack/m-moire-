@@ -1,14 +1,18 @@
 // ============================================================
 // BEAUTIFUL WOMEN - Logique Page d'Accueil (main.js)
+// Rôle : Orchestrer le chargement et le rendu des données de la page
+//        d'accueil (catégories, articles tendances et vendeurs vedettes).
+//        Comporte des structures de secours (fallbacks statiques) pour
+//        garantir une présentation fonctionnelle même sans connexion SQL.
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log("🚀 Initialisation de la page d'accueil...");
-    // Initialiser l'observateur de reveal
+    // 1. Initialiser le premier passage de Scroll Reveal pour animer les éléments fixes
     initScrollReveal();
 
     try {
-        // Charger les données en parallèle
+        // 2. Charger les différentes sections en parallèle (Promise.all) pour accélérer le rendu
         await Promise.all([
             chargerCategories(),
             chargerTendances(),
@@ -19,18 +23,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error("❌ Erreur lors du chargement des données :", error);
     }
 
-    // Relancer le reveal après chargement dynamique
+    // 3. Relancer Scroll Reveal avec un décalage pour attacher les animations sur les éléments
+    //    chargés dynamiquement depuis le serveur backend.
     setTimeout(() => {
         console.log("✨ Finalisation du reveal...");
         initScrollReveal();
     }, 800);
 });
 
-/** Système de Reveal au Scroll (Déplacé dans ui.js) */
-
 // ============================================================
-// CATÉGORIES
+// SECTIONS : CATÉGORIES
 // ============================================================
+/**
+ * Récupère les catégories actives. En cas de panne de l'API backend,
+ * bascule sur une liste statique prédéfinie pour ne pas casser le design.
+ */
 async function chargerCategories() {
     const grid = document.getElementById('categories-grid');
     if (!grid) return;
@@ -38,8 +45,8 @@ async function chargerCategories() {
     console.log("📥 Chargement des catégories...");
     const res = await api.get('/categories');
 
+    // Plan de repli (Fallback) : Catégories statiques si le backend ne répond pas
     if (!res.ok || !res.data.categories) {
-        // Fallback statique si l'API n'est pas disponible
         const fallback = [
             { nom: 'Wax', slug: 'wax', icone: '🌸', nb_produits: '—' },
             { nom: 'Bazin', slug: 'bazin', icone: '✨', nb_produits: '—' },
@@ -52,9 +59,16 @@ async function chargerCategories() {
         return;
     }
 
+    // Affichage des catégories reçues de la base de données
     grid.innerHTML = res.data.categories.map(c => carteCategorie(c)).join('');
 }
 
+/**
+ * Génère le code HTML d'une carte de catégorie.
+ * 
+ * @param {Object} cat - Données de la catégorie
+ * @returns {String} Balisage HTML
+ */
 function carteCategorie(cat) {
     return `
         <div class="categorie-card reveal reveal-zoom" onclick="window.location='catalogue.html?categorie=${cat.slug}'">
@@ -66,10 +80,10 @@ function carteCategorie(cat) {
 }
 
 // ============================================================
-// PRODUITS EN TENDANCE
+// SECTIONS : PRODUITS EN TENDANCE
 // ============================================================
 
-// Images locales de pagnes africains authentiques (plus besoin d'internet)
+// Modèles d'articles de pagnes et créations africaines de secours pour la démonstration
 const TENDANCES_AFRICAINES = [
     {
         id: 's1', nom: 'Grand Boubou Wax Ankara',
@@ -109,6 +123,10 @@ const TENDANCES_AFRICAINES = [
     }
 ];
 
+/**
+ * Récupère les 8 articles tendances de la semaine. Si la base est vierge
+ * ou inaccessible, affiche les tendances locales prédéfinies (fallback).
+ */
 async function chargerTendances() {
     const grid = document.getElementById('tendances-grid');
     if (!grid) return;
@@ -116,17 +134,18 @@ async function chargerTendances() {
     console.log("📥 Chargement des tendances...");
     const res = await api.get('/produits/tendances');
 
-    // Si l'API retourne des produits, les afficher
+    // Afficher les produits si l'API en renvoie
     if (res.ok && res.data.produits && res.data.produits.length > 0) {
         grid.innerHTML = res.data.produits.map(p => carteProduit(p)).join('');
         return;
     }
 
-    // Sinon, afficher les tendances africaines statiques
-    console.log("ℹ️ Aucune tendance en base, affichage des modèles africains statiques.");
+    // Sinon, afficher la structure de démonstration africaine
+    console.log("ℹ️ Aucune tendance en base de données, affichage des modèles africains statiques de démo.");
     grid.innerHTML = TENDANCES_AFRICAINES.map(p => carteProduitStatic(p)).join('');
 }
 
+/** Génère le HTML d'un produit statique de démonstration */
 function carteProduitStatic(p) {
     const imageSrc = p.images[0];
     const etoiles = etoilesHTML(p.note_moyenne || 0);
@@ -165,8 +184,9 @@ function carteProduitStatic(p) {
     `;
 }
 
+/** Génère le HTML d'un produit dynamique issu de la base de données */
 function carteProduit(p) {
-    // Parser les images (JSON string, tableau ou chaine simple)
+    // Traitement et nettoyage du format d'image (chaîne, tableau ou JSON sérialisé)
     let path = null;
     try {
         if (!p.images) {
@@ -177,7 +197,7 @@ function carteProduit(p) {
         } else if (Array.isArray(p.images)) {
             path = p.images[0];
         } else {
-            path = p.images; // Chaine simple
+            path = p.images;
         }
     } catch (e) {
         path = null;
@@ -221,8 +241,11 @@ function carteProduit(p) {
 }
 
 // ============================================================
-// VENDEURS VEDETTES
+// SECTIONS : VENDEURS VEDETTES
 // ============================================================
+/**
+ * Charge les boutiques vedettes à la une et dessine leurs cartes.
+ */
 async function chargerVendeurs() {
     const grid = document.getElementById('vendeurs-grid');
     if (!grid) return;
@@ -242,6 +265,7 @@ async function chargerVendeurs() {
     grid.innerHTML = res.data.vendeurs.map(v => carteVendeur(v)).join('');
 }
 
+/** Génère le HTML d'un vendeur vedette */
 function carteVendeur(v) {
     const etoiles = etoilesHTML(v.note_moyenne || 0);
     return `
@@ -263,6 +287,3 @@ function carteVendeur(v) {
         </div>
     `;
 }
-
-// Exposer globalement
-// (Certaines fonctions sont maintenant dans ui.js)
