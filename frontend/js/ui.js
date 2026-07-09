@@ -44,15 +44,12 @@ function ajouterAuPanier(produit) {
     panier.ajouter(produit, 1);
 }
 
-/** Lancer une recherche globale */
 function lancerRecherche() {
     const q = document.getElementById('search-input')?.value?.trim();
-    if (q) {
-        if (window.location.pathname.includes('catalogue.html') && typeof appliquerFiltres === 'function') {
-            appliquerFiltres();
-        } else {
-            window.location.href = `catalogue.html?recherche=${encodeURIComponent(q)}`;
-        }
+    if (window.location.pathname.includes('catalogue.html') && typeof appliquerFiltres === 'function') {
+        appliquerFiltres();
+    } else if (q) {
+        window.location.href = `catalogue.html?recherche=${encodeURIComponent(q)}`;
     }
 }
 
