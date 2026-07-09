@@ -132,6 +132,34 @@ app.get('/api/debug-status', async (req, res) => {
     });
 });
 
+// Endpoint diagnostic variables (aide Railway - ne montre pas les mots de passe)
+app.get('/api/debug-env', (req, res) => {
+    const mask = (v) => v ? (v.substring(0, 3) + '***') : 'VIDE';
+    const has  = (v) => v ? 'OUI' : 'NON';
+    res.json({
+        // Variables Railway standard MySQL plugin
+        MYSQL_URL:          has(process.env.MYSQL_URL),
+        MYSQL_PRIVATE_URL:  has(process.env.MYSQL_PRIVATE_URL),
+        DATABASE_URL:       has(process.env.DATABASE_URL),
+        // Variables individuelles (avec et sans underscore)
+        MYSQLHOST:          process.env.MYSQLHOST          || 'VIDE',
+        MYSQL_HOST:         process.env.MYSQL_HOST         || 'VIDE',
+        MYSQLPORT:          process.env.MYSQLPORT          || 'VIDE',
+        MYSQLUSER:          process.env.MYSQLUSER          || 'VIDE',
+        MYSQL_USER:         process.env.MYSQL_USER         || 'VIDE',
+        MYSQLPASSWORD:      mask(process.env.MYSQLPASSWORD),
+        MYSQL_PASSWORD:     mask(process.env.MYSQL_PASSWORD),
+        MYSQLDATABASE:      process.env.MYSQLDATABASE      || 'VIDE',
+        MYSQL_DATABASE:     process.env.MYSQL_DATABASE     || 'VIDE',
+        // Variables personnalisees (DB_*)
+        DB_HOST:            process.env.DB_HOST            || 'VIDE',
+        DB_PASSWORD:        mask(process.env.DB_PASSWORD),
+        DB_NAME:            process.env.DB_NAME            || 'VIDE',
+        NODE_ENV:           process.env.NODE_ENV           || 'VIDE',
+        JWT_SECRET:         has(process.env.JWT_SECRET),
+    });
+});
+
 // ============================================================
 // REDIRIGER TOUTES LES AUTRES ROUTES VERS index.html (SPA)
 // ============================================================
