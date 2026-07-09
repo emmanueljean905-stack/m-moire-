@@ -1,0 +1,10 @@
+{
+  "name": "beautiful-women-root",
+  "version": "1.0.0",
+  "description": "Root package for Beautiful Women",
+  "scripts": {
+    "postinstall": "npm install --prefix backend",
+    "start": "node backend/server.js",
+    "db:railway": "npm run db:railway --prefix backend"
+  }
+}
