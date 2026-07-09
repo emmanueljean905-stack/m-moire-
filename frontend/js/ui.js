@@ -12,6 +12,15 @@ function etoilesHTML(note) {
 
 /** Toggler un produit en favoris (UI + LocalStorage) */
 function toggleFavori(btn, idProduit) {
+    // ── Vérification : l'utilisateur doit être connecté pour ajouter un favori ──
+    if (!session.estConnecte()) {
+        toast('🔒 Connectez-vous pour ajouter des favoris !', 'erreur');
+        setTimeout(() => {
+            window.location.href = 'auth.html?redirect=catalogue.html';
+        }, 1800);
+        return; // Bloquer l'ajout si non connecté
+    }
+
     const icon = btn.querySelector('i');
     const estFavori = btn.classList.toggle('active');
     icon.className = estFavori ? 'fas fa-heart' : 'far fa-heart';
