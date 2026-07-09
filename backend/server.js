@@ -136,37 +136,22 @@ app.get('/api/debug-status', async (req, res) => {
 app.get('/api/debug-env', (req, res) => {
     const mask = (v) => v ? (v.substring(0, 4) + '***[len=' + v.length + ']') : 'VIDE';
     const has  = (v) => v ? 'OUI' : 'NON';
+
+    // Lister TOUS les noms de variables (pas leurs valeurs) pour voir ce que Railway injecte
+    const allKeys = Object.keys(process.env).sort();
+
     res.json({
-        // --- URLs completes (les plus fiables) ---
-        MYSQL_URL:               has(process.env.MYSQL_URL),
-        MYSQL_PRIVATE_URL:       has(process.env.MYSQL_PRIVATE_URL),
-        DATABASE_URL:            has(process.env.DATABASE_URL),
-        // --- Variables sans underscore (ancien format Railway) ---
-        MYSQLHOST:               process.env.MYSQLHOST               || 'VIDE',
-        MYSQLPORT:               process.env.MYSQLPORT               || 'VIDE',
-        MYSQLUSER:               process.env.MYSQLUSER               || 'VIDE',
-        MYSQLPASSWORD:           mask(process.env.MYSQLPASSWORD),
-        MYSQLDATABASE:           process.env.MYSQLDATABASE           || 'VIDE',
-        // --- Variables avec underscore (nouveau format Railway) ---
-        MYSQL_HOST:              process.env.MYSQL_HOST              || 'VIDE',
-        MYSQL_PORT:              process.env.MYSQL_PORT              || 'VIDE',
-        MYSQL_USER:              process.env.MYSQL_USER              || 'VIDE',
-        MYSQL_PASSWORD:          mask(process.env.MYSQL_PASSWORD),
-        MYSQL_DATABASE:          process.env.MYSQL_DATABASE          || 'VIDE',
-        MYSQL_ROOT_PASSWORD:     mask(process.env.MYSQL_ROOT_PASSWORD),
-        // --- Variables DB_ personnalisees ---
-        DB_HOST:                 process.env.DB_HOST                 || 'VIDE',
-        DB_PORT:                 process.env.DB_PORT                 || 'VIDE',
-        DB_USER:                 process.env.DB_USER                 || 'VIDE',
-        DB_PASSWORD:             mask(process.env.DB_PASSWORD),
-        DB_NAME:                 process.env.DB_NAME                 || 'VIDE',
-        // --- Infos serveur ---
-        NODE_ENV:                process.env.NODE_ENV                || 'VIDE',
-        JWT_SECRET:              has(process.env.JWT_SECRET),
-        // --- TOUTES les variables d'env qui contiennent MYSQL ou DB ---
-        ALL_MYSQL_KEYS: Object.keys(process.env)
-            .filter(k => k.includes('MYSQL') || k.includes('mysql') || k.includes('DATABASE'))
-            .join(', ') || 'AUCUNE',
+        // Variables connues
+        MYSQL_URL:           has(process.env.MYSQL_URL),
+        DB_HOST:             process.env.DB_HOST    || 'VIDE',
+        DB_PORT:             process.env.DB_PORT    || 'VIDE',
+        DB_USER:             process.env.DB_USER    || 'VIDE',
+        DB_PASSWORD:         mask(process.env.DB_PASSWORD),
+        DB_NAME:             process.env.DB_NAME    || 'VIDE',
+        NODE_ENV:            process.env.NODE_ENV   || 'VIDE',
+        JWT_SECRET:          has(process.env.JWT_SECRET),
+        // TOUS les noms de variables injectees par Railway (cle uniquement, pas les valeurs)
+        TOUTES_LES_CLES: allKeys.join(' | '),
     });
 });
 
