@@ -173,6 +173,21 @@ CREATE TABLE IF NOT EXISTS favoris (
 ) ENGINE=InnoDB;
 
 -- ============================================================
+-- TABLE : PAIEMENTS
+-- ============================================================
+CREATE TABLE IF NOT EXISTS paiements (
+    id             INT AUTO_INCREMENT PRIMARY KEY,
+    montant        DECIMAL(10,0) NOT NULL,
+    methode        ENUM('cinetpay','wave','orange_money','moov_money','mobile_money') NOT NULL,
+    statut         ENUM('en_attente','succes','echec','rembourse') NOT NULL DEFAULT 'en_attente',
+    transaction_id VARCHAR(255) DEFAULT NULL,
+    id_commande    INT NOT NULL UNIQUE,
+    created_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_commande) REFERENCES commandes(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ============================================================
 -- DONNÉES DE DÉMONSTRATION (mot de passe commun : password123)
 -- ============================================================
 INSERT IGNORE INTO utilisateurs (nom, email, mot_de_passe, role, telephone) VALUES
