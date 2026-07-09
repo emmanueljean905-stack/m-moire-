@@ -176,13 +176,13 @@ CREATE TABLE IF NOT EXISTS favoris (
 -- ============================================================
 INSERT IGNORE INTO utilisateurs (nom, email, mot_de_passe, role, telephone) VALUES
     ('Admin Beautiful Women', 'admin@beautifulwomen.ci',
-     '$2a$10$DjVGJ8IuXau/ZTnPeP9mARdpFr2V0Rmq.IB5MuEWExom', 'admin', '+225 07 00 00 00 00'),
+     '$2a$10$/M2xCfvAKfNR5YSgf3ywWu2yiJK3r8VIeTLcrF/RneISN./pypXYW', 'admin', '+225 07 00 00 00 00'),
     ('Adjoua Kone', 'adjoua@gmail.com',
-     '$2a$10$DjVGJ8IuXau/ZTnPeP9mARdpFr2V0Rmq.IB5MuEWExom', 'vendeur', '+225 07 11 22 33 44'),
+     '$2a$10$/M2xCfvAKfNR5YSgf3ywWu2yiJK3r8VIeTLcrF/RneISN./pypXYW', 'vendeur', '+225 07 11 22 33 44'),
     ('Aminata Coulibaly', 'aminata@gmail.com',
-     '$2a$10$DjVGJ8IuXau/ZTnPeP9mARdpFr2V0Rmq.IB5MuEWExom', 'vendeur', '+225 05 44 55 66 77'),
+     '$2a$10$/M2xCfvAKfNR5YSgf3ywWu2yiJK3r8VIeTLcrF/RneISN./pypXYW', 'vendeur', '+225 05 44 55 66 77'),
     ('Mariame Toure', 'mariame@gmail.com',
-     '$2a$10$DjVGJ8IuXau/ZTnPeP9mARdpFr2V0Rmq.IB5MuEWExom', 'acheteur', '+225 01 88 99 00 11');
+     '$2a$10$/M2xCfvAKfNR5YSgf3ywWu2yiJK3r8VIeTLcrF/RneISN./pypXYW', 'acheteur', '+225 01 88 99 00 11');
 
 INSERT IGNORE INTO vendeurs (nom_boutique, description, localisation, valide, id_utilisateur) VALUES
     ('Wax Palace Adjoua', 'Les plus beaux wax d Abidjan, directement importes du Ghana', 'Treichville, Abidjan', 1, 2),

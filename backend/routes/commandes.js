@@ -114,12 +114,10 @@ router.post('/', authMiddleware, async (req, res) => {
         const trans_id = `BW-${commandeId}-${Date.now()}`;
         
         // Mode Simulation / Démo
-        // Si aucune clé CinetPay n'est configurée dans le fichier .env, ou si nous sommes
-        // en environnement local de développement sans DNS public pour les notifications webhooks,
-        // le système bascule de façon transparente en mode démo / simulation.
+        // Bascule en démo UNIQUEMENT si la clé CinetPay n'est pas configurée (clé par défaut ou absente).
+        // En production avec une vraie clé, le paiement réel est activé.
         const isDemo = !process.env.CINETPAY_API_KEY || 
-                       process.env.CINETPAY_API_KEY.includes('your_') || 
-                       process.env.NODE_ENV === 'development';
+                       process.env.CINETPAY_API_KEY.includes('your_');
 
         if (isDemo) {
             console.log(`\n💎 MODE DÉMO : Simulation de paiement pour commande #${commandeId}`);

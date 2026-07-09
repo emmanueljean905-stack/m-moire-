@@ -4,7 +4,7 @@ const pool = require('./config/db');
 async function testLogin() {
     try {
         const email = 'admin@beautifulwomen.ci';
-        const rawPass = 'admin123';
+        const rawPass = 'password123';
         
         const [rows] = await pool.query('SELECT * FROM utilisateurs WHERE email = ?', [email]);
         if (rows.length === 0) {

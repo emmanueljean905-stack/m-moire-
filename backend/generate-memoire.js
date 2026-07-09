@@ -196,7 +196,7 @@ const children = [
     h3('II.3 Outils de conception et de modélisation'),
     p('• Figma est un outil de conception et de prototypage collaboratif basé sur le cloud. Nous l\'avons utilisé pour concevoir les maquettes de l\'interface utilisateur (UI) de la marketplace avant le développement, en définissant la palette de couleurs, la typographie et la disposition des composants.'),
     space(),
-    p('• Draw.io (diagrams.net) est un outil en ligne gratuit pour créer des diagrammes. Nous l\'avons utilisé pour modéliser l\'architecture logicielle de la solution, le diagramme de classes UML pour la base de données et les diagrammes de cas d\'utilisation.'),
+    p('• Draw.io (diagrams.net) est un outil en ligne gratuit pour créer des diagrammes. Nous l\'avons utilisé pour modéliser l\'architecture logicielle de la solution, le Modèle Conceptuel des Données (MCD) et le Modèle Conceptuel des Traitements (MCT) de la méthode Merise pour la base de données et les processus métiers.'),
     space(),
 
     h3('II.4 Outils de gestion de versions et de test'),

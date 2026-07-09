@@ -20,12 +20,24 @@ const app = express();
 // ============================================================
 
 // Configuration de CORS (Cross-Origin Resource Sharing)
-// Indispensable pour autoriser le frontend (qui peut tourner sur un autre port ou protocole)
-// à effectuer des requêtes API vers ce serveur Node.js.
-app.use(cors({
-    origin: true,        // Autorise toutes les origines (pratique en développement)
-    credentials: true    // Permet le transfert de cookies de session et d'en-têtes sécurisés
-}));
+// En développement : autorise tout. En production : restreint au domaine du frontend.
+const corsOptions = {
+    origin: (origin, callback) => {
+        // En développement, ou si pas d'origin (appels server-to-server), tout autoriser
+        if (process.env.NODE_ENV !== 'production' || !origin) {
+            return callback(null, true);
+        }
+        // En production, n'autoriser que le(s) domaine(s) du frontend
+        const allowed = (process.env.FRONTEND_URL || '').split(',').map(u => u.trim());
+        if (allowed.includes(origin) || allowed.includes('*')) {
+            callback(null, true);
+        } else {
+            callback(new Error(`CORS: Origine non autorisée : ${origin}`));
+        }
+    },
+    credentials: true
+};
+app.use(cors(corsOptions));
 
 // Analyseurs de requêtes (Body Parsers)
 // Indispensables pour pouvoir lire les données envoyées par le client dans req.body.

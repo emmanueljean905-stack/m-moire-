@@ -13,10 +13,15 @@ window.onerror = function(msg, url, line) {
     return true; // Empêche l'affichage du dialogue d'erreur natif du navigateur
 };
 
-// ── DÉTERMINATION DYNAMIQUE DE L'URL BACKEND ───────────────────
+// ── DÉTERMINATION DYNAMIQUE DE L'URL BACKEND ───────────────────────────
 // Permet de configurer l'URL cible de l'API automatiquement, que le site
 // soit hébergé en local, sur une adresse IP de réseau local ou en ligne.
 const getBackendUrl = () => {
+    // ✔ Priorité 1 : URL définie manuellement dans config.js (production Netlify + Railway)
+    if (window.BW_API_URL && window.BW_API_URL.trim() !== '') {
+        return window.BW_API_URL.trim().replace(/\/$/, ''); // Enlever le slash final si présent
+    }
+
     const { protocol, hostname, port, origin } = window.location;
     
     // Si on accède directement via le port 3000 (Express servant le frontend)
@@ -39,7 +44,7 @@ const getBackendUrl = () => {
         return `${backendProtocol}//${hostname}:3000`;
     }
     
-    // Valeur de repli (cible l'origine actuelle pour la production ou les tunnels)
+    // ✔ En production sur Railway : le backend sert le frontend → même origin
     return origin;
 };
 
