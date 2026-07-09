@@ -187,3 +187,14 @@ INSERT IGNORE INTO utilisateurs (nom, email, mot_de_passe, role, telephone) VALU
 INSERT IGNORE INTO vendeurs (nom_boutique, description, localisation, valide, id_utilisateur) VALUES
     ('Wax Palace Adjoua', 'Les plus beaux wax d Abidjan, directement importes du Ghana', 'Treichville, Abidjan', 1, 2),
     ('Bazin d Or Aminata', 'Specialiste du bazin brode de qualite superieure', 'Adjame, Abidjan', 1, 3);
+
+-- ============================================================
+-- PRODUITS DE DÉMONSTRATION
+-- ============================================================
+INSERT IGNORE INTO produits (nom, description, prix, stock, images, id_vendeur, id_categorie) VALUES
+    ('Pagne Wax Hollandais Authentique', 'Véritable Wax Hollandais de qualité supérieure avec motifs traditionnels dorés. Idéal pour vos tenues de fête.', 15000, 15, '["images/wax-hollandais.jpg"]', 1, 1),
+    ('Bazin Riche Brodé de Luxe', 'Bazin riche teint à la main et orné de magnifiques broderies dorées. Toucher soyeux et brillance durable.', 35000, 8, '["images/bazin-brodee.jpg"]', 2, 2),
+    ('Kente Royal Africain', 'Pagne Kente traditionnel tissé main en fils de coton et de soie de haute qualité. Couleurs vibrantes.', 60000, 5, '["images/kente-royal.jpg"]', 1, 3),
+    ('Tissu Bogolan Traditionnel', 'Tissu de coton tissé et décoré selon les techniques ancestrales de teinture à base d argile.', 25000, 10, '["images/bogolan-mali.jpg"]', 2, 4),
+    ('Pagne Wax Ankara Élégant', 'Pagne imprimé Ankara aux motifs modernes et colorés. Idéal pour robes, jupes et chemises décontractées.', 8000, 20, '["images/wax-ankara.jpg"]', 1, 6);
+
