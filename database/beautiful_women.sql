@@ -96,9 +96,9 @@ CREATE TABLE IF NOT EXISTS produits (
     FOREIGN KEY (id_categorie) REFERENCES categories(id)  ON DELETE RESTRICT
 ) ENGINE=InnoDB;
 
-CREATE INDEX IF NOT EXISTS idx_produits_vendeur   ON produits(id_vendeur);
-CREATE INDEX IF NOT EXISTS idx_produits_categorie ON produits(id_categorie);
-CREATE INDEX IF NOT EXISTS idx_produits_prix      ON produits(prix);
+CREATE INDEX idx_produits_vendeur   ON produits(id_vendeur);
+CREATE INDEX idx_produits_categorie ON produits(id_categorie);
+CREATE INDEX idx_produits_prix      ON produits(prix);
 
 -- ============================================================
 -- TABLE : COMMANDES

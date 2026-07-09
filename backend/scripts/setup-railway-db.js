@@ -30,9 +30,10 @@ async function setupDatabase() {
         const dbName = process.env.DB_NAME || process.env.MYSQLDATABASE || 'beautiful_women';
 
         // 1. Créer la base de données
-        console.log(`📦 Création de la base "${dbName}"...`);
+        console.log(`📦 Création propre de la base "${dbName}"...`);
+        await connection.query(`DROP DATABASE IF EXISTS \`${dbName}\``);
         await connection.query(
-            `CREATE DATABASE IF NOT EXISTS \`${dbName}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`
+            `CREATE DATABASE \`${dbName}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`
         );
         await connection.query(`USE \`${dbName}\``);
         console.log('✅ Base de données prête.');
@@ -53,13 +54,26 @@ async function setupDatabase() {
 
         // 3. Appliquer les migrations
         console.log('🔄 Application des migrations...');
-        await connection.query(`
-            ALTER TABLE vendeurs ADD COLUMN IF NOT EXISTS valide TINYINT(1) NOT NULL DEFAULT 1;
-        `);
-        await connection.query(`UPDATE vendeurs SET valide = 1 WHERE valide = 0`);
-        await connection.query(`
-            ALTER TABLE commandes ADD COLUMN IF NOT EXISTS methode VARCHAR(50) DEFAULT 'mobile_money';
-        `);
+        try {
+            await connection.query(`
+                ALTER TABLE vendeurs ADD COLUMN valide TINYINT(1) NOT NULL DEFAULT 1;
+            `);
+        } catch (err) {
+            console.log('ℹ️ Colonne "valide" déjà présente ou non supportée (ignorée).');
+        }
+        
+        try {
+            await connection.query(`UPDATE vendeurs SET valide = 1 WHERE valide = 0`);
+        } catch (err) {}
+
+        try {
+            await connection.query(`
+                ALTER TABLE commandes ADD COLUMN methode VARCHAR(50) DEFAULT 'mobile_money';
+            `);
+        } catch (err) {
+            console.log('ℹ️ Colonne "methode" déjà présente ou non supportée (ignorée).');
+        }
+
         // Tables supplémentaires
         await connection.query(`
             CREATE TABLE IF NOT EXISTS litiges (
