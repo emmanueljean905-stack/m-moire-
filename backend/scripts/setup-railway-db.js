@@ -19,15 +19,15 @@ async function setupDatabase() {
     try {
         // Connexion sans spécifier la base (pour pouvoir la créer)
         connection = await mysql.createConnection({
-            host:               process.env.DB_HOST     || 'localhost',
-            port:               parseInt(process.env.DB_PORT || '3306'),
-            user:               process.env.DB_USER     || 'root',
-            password:           process.env.DB_PASSWORD || '',
+            host:               process.env.DB_HOST     || process.env.MYSQLHOST     || 'localhost',
+            port:               parseInt(process.env.DB_PORT || process.env.MYSQLPORT || '3306'),
+            user:               process.env.DB_USER     || process.env.MYSQLUSER     || 'root',
+            password:           process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || '',
             multipleStatements: true,
             ssl:                process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined
         });
 
-        const dbName = process.env.DB_NAME || 'beautiful_women';
+        const dbName = process.env.DB_NAME || process.env.MYSQLDATABASE || 'beautiful_women';
 
         // 1. Créer la base de données
         console.log(`📦 Création de la base "${dbName}"...`);
