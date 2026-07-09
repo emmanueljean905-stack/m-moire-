@@ -21,8 +21,13 @@ const pool = mysql.createPool({
     port:     process.env.DB_PORT     || process.env.MYSQLPORT     || 3306,
     user:     process.env.DB_USER     || process.env.MYSQLUSER     || 'root',
     password: process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || '',
-    database: process.env.DB_NAME     || process.env.MYSQLDATABASE     || 'beautiful_women',
+    database: process.env.DB_NAME     || process.env.MYSQLDATABASE || 'beautiful_women',
     charset:  'utf8mb4',
+
+    // ── SSL (obligatoire en production Railway) ──────────────
+    ssl: process.env.NODE_ENV === 'production'
+        ? { rejectUnauthorized: false }  // Railway utilise des certificats auto-signés
+        : undefined,
 
     // ── Taille du pool ───────────────────────────────────────
     waitForConnections: true,

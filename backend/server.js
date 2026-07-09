@@ -10,7 +10,7 @@
 const express     = require('express'); // Framework de routage HTTP et serveur d'application
 const cors        = require('cors');    // Middleware permettant de gérer le partage de ressources cross-origin
 const path        = require('path');    // Module utilitaire Node.js pour manipuler les chemins de fichiers
-require('dotenv').config();             // Charge les variables d'environnement depuis le fichier .env dans process.env
+require('dotenv').config({ path: path.join(__dirname, '.env') }); // Charge .env depuis le dossier backend/
 
 // Instanciation de l'application Express
 const app = express();

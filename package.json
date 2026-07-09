@@ -2,9 +2,15 @@
   "name": "beautiful-women-root",
   "version": "1.0.0",
   "description": "Root package for Beautiful Women",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
   "scripts": {
+    "install:backend": "npm install --prefix backend",
     "postinstall": "npm install --prefix backend",
     "start": "node backend/server.js",
-    "db:railway": "npm run db:railway --prefix backend"
+    "build": "echo 'No build step required'",
+    "db:railway": "node backend/scripts/setup-railway-db.js"
   }
 }
