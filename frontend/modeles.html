@@ -23,6 +23,38 @@
         .inspiration-hero h1 { font-size: 2.5rem; margin-bottom: 15px; }
         .inspiration-hero p { opacity: 0.8; max-width: 600px; margin: 0 auto; }
 
+        /* ── Barre de filtres ── */
+        .models-filtres {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: center;
+            background: var(--blanc);
+            padding: 18px 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            margin-bottom: 35px;
+        }
+        .models-filtres input[type="text"],
+        .models-filtres input[type="number"],
+        .models-filtres select {
+            padding: 9px 14px;
+            border: 1px solid var(--creme-d);
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-family: inherit;
+            background: var(--creme);
+            outline: none;
+            transition: var(--transition);
+        }
+        .models-filtres input:focus,
+        .models-filtres select:focus { border-color: var(--orange); background: #fff; }
+        .models-filtres input[type="text"] { flex: 1; min-width: 180px; }
+        .models-filtres input[type="number"] { width: 110px; }
+        .models-filtres .filtre-label { font-size: 0.82rem; color: var(--gris); font-weight: 600; white-space: nowrap; }
+        .models-filtres .prix-groupe { display:flex; align-items:center; gap:8px; }
+        .models-result-count { color: var(--gris); font-size: 0.88rem; margin-bottom: 15px; }
+
         .models-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -38,10 +70,10 @@
             transition: var(--transition);
             position: relative;
         }
-        .model-card:hover { transform: translateY(-10px); }
+        .model-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-md, 0 12px 30px rgba(0,0,0,.15)); }
 
         .model-img {
-            height: 400px;
+            height: 380px;
             position: relative;
             overflow: hidden;
         }
@@ -50,23 +82,34 @@
             object-fit: cover;
             transition: transform 0.5s ease;
         }
-        .model-card:hover .model-img img { transform: scale(1.1); }
+        .model-card:hover .model-img img { transform: scale(1.08); }
 
         .model-badge {
             position: absolute;
             top: 15px; right: 15px;
-            background: rgba(255,255,255,0.9);
+            background: rgba(255,255,255,0.92);
             padding: 5px 12px;
             border-radius: 20px;
             font-size: 0.75rem;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--orange);
             backdrop-filter: blur(4px);
         }
+        .model-cat-badge {
+            position: absolute;
+            top: 15px; left: 15px;
+            background: rgba(var(--brun-rgb, 90,50,20),.85);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
 
         .model-content { padding: 20px; }
-        .model-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--brun); }
-        .model-desc { font-size: 0.85rem; color: var(--gris); line-height: 1.5; margin-bottom: 15px; }
+        .model-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; color: var(--brun); }
+        .model-desc { font-size: 0.84rem; color: var(--gris); line-height: 1.55; margin-bottom: 15px;
+                      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
         .model-footer {
             display: flex;
@@ -76,6 +119,12 @@
             border-top: 1px solid var(--creme-d);
         }
         .model-price { font-size: 1.2rem; font-weight: 700; color: var(--orange); }
+
+        @media (max-width: 768px) {
+            .models-filtres { flex-direction: column; align-items: stretch; }
+            .models-filtres input[type="text"] { width: 100%; }
+            .prix-groupe { width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -106,7 +155,6 @@
                 <a href="auth.html" class="btn btn-primary" style="padding:7px 12px; font-size:0.75rem; white-space:nowrap;">Se connecter</a>
                 <a href="auth.html?mode=register" class="btn btn-outline" style="padding:7px 12px; font-size:0.75rem; color:var(--orange); border-color:var(--orange); white-space:nowrap;">S'inscrire</a>
             </div>
-            <!-- Bouton hamburger mobile -->
             <button class="navbar-hamburger" id="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Menu">
                 <span></span><span></span><span></span>
             </button>
@@ -129,20 +177,41 @@
 
 <section class="inspiration-hero">
     <div class="container">
-        <h1 class="reveal reveal-up">Inspiration & Couture</h1>
+        <h1 class="reveal reveal-up">👗 Couture & Modèles</h1>
         <p class="reveal reveal-up reveal-delay-1">
-            Découvrez nos modèles exclusifs cousus par des artisans locaux. 
-            Laissez-vous inspirer par la créativité ivoirienne.
+            Découvrez nos créations exclusives réalisées par des artisans locaux ivoiriens.
+            Robes, ensembles, tenues de cérémonie — filtrez selon votre style !
         </p>
     </div>
 </section>
 
 <div class="container">
-    <div class="section-titre reveal reveal-up">
-        <h2>Nos Modèles Favoris</h2>
-        <p>Prêt-à-porter et créations sur mesure</p>
+
+    <!-- ── Barre de filtres ── -->
+    <div class="models-filtres">
+        <i class="fas fa-filter" style="color:var(--orange);"></i>
+        <input type="text" id="mod-search" placeholder="🔍 Rechercher un modèle..." oninput="filtrerModeles()" />
+
+        <span class="filtre-label">Prix :</span>
+        <div class="prix-groupe">
+            <input type="number" id="mod-prix-min" placeholder="Min FCFA" oninput="filtrerModeles()" />
+            <span style="color:var(--gris)">–</span>
+            <input type="number" id="mod-prix-max" placeholder="Max FCFA" oninput="filtrerModeles()" />
+        </div>
+
+        <span class="filtre-label">Trier :</span>
+        <select id="mod-tri" onchange="filtrerModeles()">
+            <option value="recent">Nouveautés</option>
+            <option value="prix_asc">Prix croissant</option>
+            <option value="prix_desc">Prix décroissant</option>
+        </select>
+
+        <button class="btn btn-outline" onclick="resetFiltresModeles()" style="padding:8px 16px; font-size:0.82rem; color:var(--brun); border-color:var(--creme-d);">
+            <i class="fas fa-redo"></i> Réinitialiser
+        </button>
     </div>
 
+    <div class="models-result-count" id="mod-count"></div>
     <div class="models-grid" id="models-grid">
         <!-- Skeletons -->
         <div class="model-card skeleton" style="height:500px"></div>
@@ -154,7 +223,7 @@
 <footer class="footer">
     <div class="container">
         <div class="footer-bottom">
-            <span>© 2025 Beautiful Women – Tous droits réservés</span>
+            <span>© 2026 Beautiful Women – Tous droits réservés</span>
             <span>Fait avec ❤️ à Abidjan</span>
         </div>
     </div>
@@ -163,11 +232,131 @@
 <div id="toast-container"></div>
 
 <script src="js/config.js"></script>
-<script src="js/api.js?v=2.3"></script>
+<script src="js/api.js?v=2.4"></script>
 <script src="js/panier.js"></script>
-<script src="js/ui.js?v=2.2"></script>
-<script src="js/modeles.js"></script>
+<script src="js/ui.js?v=2.3"></script>
 <script src="js/chatbot.js"></script>
+<script>
+// ── Données brutes chargées depuis l'API ──
+let tousLesModeles = [];
+
+document.addEventListener('DOMContentLoaded', async () => {
+    initScrollReveal && initScrollReveal();
+    await chargerModeles();
+});
+
+async function chargerModeles() {
+    const grid = document.getElementById('models-grid');
+    if (!grid) return;
+
+    // Charger tous les produits de la catégorie Couture & Modèles
+    const res = await api.get('/produits?categorie=couture-modeles&limite=50');
+
+    if (res && res.ok && res.data.produits && res.data.produits.length > 0) {
+        tousLesModeles = res.data.produits;
+        afficherModeles(tousLesModeles);
+    } else {
+        // Fallback statique si l'API ne répond pas
+        grid.innerHTML = `
+            <div style="grid-column:1/-1; text-align:center; padding:60px 20px;">
+                <p style="font-size:3rem;">👗</p>
+                <h3 style="color:var(--brun); margin-bottom:10px;">Aucun modèle disponible</h3>
+                <p style="color:var(--gris);">Nos couturières préparent de nouvelles créations. Revenez bientôt !</p>
+                <a href="catalogue.html" class="btn btn-primary" style="margin-top:20px;">Voir le catalogue</a>
+            </div>`;
+        document.getElementById('mod-count').textContent = '';
+    }
+}
+
+function afficherModeles(liste) {
+    const grid = document.getElementById('models-grid');
+    const count = document.getElementById('mod-count');
+
+    if (!liste || liste.length === 0) {
+        grid.innerHTML = `
+            <div style="grid-column:1/-1; text-align:center; padding:60px 20px;">
+                <p style="font-size:3rem;">🔍</p>
+                <h3 style="color:var(--brun); margin-bottom:10px;">Aucun modèle trouvé</h3>
+                <p style="color:var(--gris);">Essayez d'élargir vos critères de filtrage.</p>
+                <button class="btn btn-primary" onclick="resetFiltresModeles()" style="margin-top:20px;">Réinitialiser les filtres</button>
+            </div>`;
+        count.textContent = '0 modèle trouvé';
+        return;
+    }
+
+    count.textContent = `${liste.length} modèle${liste.length > 1 ? 's' : ''} trouvé${liste.length > 1 ? 's' : ''}`;
+
+    grid.innerHTML = liste.map(p => {
+        const imgUrl = api.getImageUrl(p.images);
+        const prix = api.formatPrice(p.prix);
+        const stockBadge = p.stock <= 3 && p.stock > 0
+            ? `<span class="model-badge" style="background:rgba(231,76,60,.9);color:#fff;">⚠️ Stock limité</span>`
+            : p.stock === 0
+            ? `<span class="model-badge" style="background:rgba(0,0,0,.7);color:#fff;">Rupture</span>`
+            : `<span class="model-badge">✨ Couture</span>`;
+
+        return `
+            <div class="model-card reveal reveal-up">
+                <div class="model-img">
+                    <img src="${imgUrl}" alt="${p.nom}" loading="lazy"
+                         onerror="this.onerror=null;this.src='images/placeholder-pagne.jpg';this.style.objectFit='contain';">
+                    ${stockBadge}
+                    <span class="model-cat-badge">👗 ${p.categorie || 'Couture'}</span>
+                </div>
+                <div class="model-content">
+                    <h3 class="model-title">${p.nom}</h3>
+                    <p class="model-desc">${p.description || 'Création artisanale ivoirienne de qualité supérieure.'}</p>
+                    <div class="model-footer">
+                        <div class="model-price">${prix}</div>
+                        <button class="btn btn-primary btn-magnetic" style="font-size:0.8rem; padding:8px 16px;"
+                            onclick='ajouterAuPanier(${JSON.stringify(p).replace(/'/g, "&apos;")})'
+                            ${p.stock === 0 ? 'disabled' : ''}>
+                            <i class="fas fa-shopping-bag"></i> Commander
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+    }).join('');
+
+    setTimeout(initScrollReveal, 300);
+}
+
+// ── Filtrage en temps réel (côté client) ──
+let debounceModeles = null;
+function filtrerModeles() {
+    clearTimeout(debounceModeles);
+    debounceModeles = setTimeout(() => {
+        const recherche = (document.getElementById('mod-search')?.value || '').toLowerCase().trim();
+        const prixMin   = Number(document.getElementById('mod-prix-min')?.value || 0);
+        const prixMax   = Number(document.getElementById('mod-prix-max')?.value || Infinity) || Infinity;
+        const tri       = document.getElementById('mod-tri')?.value || 'recent';
+
+        let filtre = tousLesModeles.filter(p => {
+            const matchRecherche = !recherche || p.nom.toLowerCase().includes(recherche) || (p.description || '').toLowerCase().includes(recherche);
+            const prix = Number(p.prix);
+            const matchPrix = (!prixMin || prix >= prixMin) && (!prixMax || prix <= prixMax);
+            return matchRecherche && matchPrix;
+        });
+
+        // Tri
+        filtre.sort((a, b) => {
+            if (tri === 'prix_asc')  return Number(a.prix) - Number(b.prix);
+            if (tri === 'prix_desc') return Number(b.prix) - Number(a.prix);
+            return new Date(b.created_at) - new Date(a.created_at); // recent
+        });
+
+        afficherModeles(filtre);
+    }, 300);
+}
+
+function resetFiltresModeles() {
+    document.getElementById('mod-search').value  = '';
+    document.getElementById('mod-prix-min').value = '';
+    document.getElementById('mod-prix-max').value = '';
+    document.getElementById('mod-tri').value = 'recent';
+    afficherModeles(tousLesModeles);
+}
+</script>
 </body>
 </html>
 
