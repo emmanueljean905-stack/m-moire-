@@ -22,7 +22,7 @@ async function setupDatabase() {
             host:               process.env.DB_HOST     || process.env.MYSQLHOST     || 'localhost',
             port:               parseInt(process.env.DB_PORT || process.env.MYSQLPORT || '3306'),
             user:               process.env.DB_USER     || process.env.MYSQLUSER     || 'root',
-            password:           process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || '',
+            password:           process.env.DB_PASSWORD || process.env.MYSQL_ROOT_PASSWORD || process.env.MYSQLPASSWORD || '',
             multipleStatements: true,
             ssl:                process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined
         });

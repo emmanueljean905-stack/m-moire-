@@ -42,7 +42,7 @@ const pool = mysql.createPool({
     host:     urlConfig ? urlConfig.host     : (process.env.DB_HOST     || process.env.MYSQLHOST     || process.env.MYSQL_HOST     || '127.0.0.1'),
     port:     urlConfig ? urlConfig.port     : Number(process.env.DB_PORT || process.env.MYSQLPORT || process.env.MYSQL_PORT || 3306),
     user:     urlConfig ? urlConfig.user     : (process.env.DB_USER     || process.env.MYSQLUSER     || process.env.MYSQL_USER     || 'root'),
-    password: urlConfig ? urlConfig.password : (process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || process.env.MYSQL_PASSWORD || ''),
+    password: urlConfig ? urlConfig.password : (process.env.DB_PASSWORD || process.env.MYSQL_ROOT_PASSWORD || process.env.MYSQLPASSWORD || process.env.MYSQL_PASSWORD || ''),
     database: urlConfig ? urlConfig.database : (process.env.DB_NAME     || process.env.MYSQLDATABASE || process.env.MYSQL_DATABASE || 'beautiful_women'),
     charset:  'utf8mb4',
 
