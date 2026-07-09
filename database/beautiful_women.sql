@@ -55,7 +55,8 @@ INSERT IGNORE INTO categories (nom, slug, icone) VALUES
     ('Kente',   'kente',   '👑'),
     ('Bogolan', 'bogolan', '🎨'),
     ('Kita',    'kita',    '🌿'),
-    ('Ankara',  'ankara',  '🦋');
+    ('Ankara',  'ankara',  '🦋'),
+    ('Couture & Modèles', 'couture-modeles', '👗');
 
 -- ============================================================
 -- TABLE : ZONES_LIVRAISON
@@ -189,12 +190,20 @@ INSERT IGNORE INTO vendeurs (nom_boutique, description, localisation, valide, id
     ('Bazin d Or Aminata', 'Specialiste du bazin brode de qualite superieure', 'Adjame, Abidjan', 1, 3);
 
 -- ============================================================
--- PRODUITS DE DÉMONSTRATION
+-- PRODUITS DE DÉMONSTRATION RÉELS
 -- ============================================================
-INSERT IGNORE INTO produits (nom, description, prix, stock, images, id_vendeur, id_categorie) VALUES
-    ('Pagne Wax Hollandais Authentique', 'Véritable Wax Hollandais de qualité supérieure avec motifs traditionnels dorés. Idéal pour vos tenues de fête.', 15000, 15, '["images/wax-hollandais.jpg"]', 1, 1),
-    ('Bazin Riche Brodé de Luxe', 'Bazin riche teint à la main et orné de magnifiques broderies dorées. Toucher soyeux et brillance durable.', 35000, 8, '["images/bazin-brodee.jpg"]', 2, 2),
-    ('Kente Royal Africain', 'Pagne Kente traditionnel tissé main en fils de coton et de soie de haute qualité. Couleurs vibrantes.', 60000, 5, '["images/kente-royal.jpg"]', 1, 3),
-    ('Tissu Bogolan Traditionnel', 'Tissu de coton tissé et décoré selon les techniques ancestrales de teinture à base d argile.', 25000, 10, '["images/bogolan-mali.jpg"]', 2, 4),
-    ('Pagne Wax Ankara Élégant', 'Pagne imprimé Ankara aux motifs modernes et colorés. Idéal pour robes, jupes et chemises décontractées.', 8000, 20, '["images/wax-ankara.jpg"]', 1, 6);
+INSERT IGNORE INTO produits (id, nom, description, prix, stock, images, id_vendeur, id_categorie) VALUES
+    (1, 'Super Wax Hollandais - Collection Royale', 'L''authentique Wax Hollandais avec des motifs dorés. Parfait pour les mariages et grandes cérémonies.', 45000, 10, '["/uploads/wax_hollandais_1.jpg"]', 1, 1),
+    (2, 'Bazin Riche Guezner - Bleu Nuit', 'Bazin de première qualité, ultra brillant et résistant. Teinture artisanale faite à la main.', 65000, 10, '["/uploads/bazin_1.jpg"]', 2, 2),
+    (3, 'Kente Ashanti Original - Couleurs Traditionnelles', 'Tissage main exporté directement du Ghana. Un tissu de prestige pour les chefs et reines-mères.', 120000, 10, '["/uploads/kente_1.jpg"]', 1, 3),
+    (4, 'Pagne Bogolan Artisanal du Mali', 'Tissu traditionnel teint à la terre avec des motifs ancestraux. 100% coton bio.', 25000, 9, '["/uploads/bogolan_1.jpg"]', 2, 4),
+    (6, 'Robe Sirène en Wax - Modèle ''Aya''', 'Magnifique robe sirène ajustée, cousue avec du Wax Hollandais. Idéale pour les sorties chics.', 35000, 9, '["/uploads/robe_wax_1.jpg"]', 1, 7),
+    (7, 'Ensemble Veste & Pantalon Bazin', 'Ensemble moderne en Bazin riche, coupe cintrée et broderies fines. Style élégant et traditionnel.', 55000, 10, '["/uploads/ensemble_bazin_1.jpg"]', 2, 7),
+    (15, 'Écharpe de Diplomate en Kente', 'Écharpe tissée main, accessoire idéal pour marquer son identité avec élégance.', 15000, 10, '["/uploads/produit_15_0.jpg"]', 2, 3),
+    (30, 'Pagne Kita Authentique Tissé Main', 'Magnifique pagne Kita authentique, tissé à la main selon la tradition, idéal pour vos grandes cérémonies et événements spéciaux.', 45000, 10, '["/uploads/pagne_kita.jpg"]', 1, 5),
+    (31, 'Robe de Soirée Ankara Moderne', 'Une création sur mesure en véritable tissu Ankara, coupe sirène avec finitions luxueuses, parfaite pour sublimer la silhouette.', 65000, 5, '["/uploads/modele_ankara.jpg"]', 1, 7),
+    (32, 'Robe de Cérémonie Kente Royal', 'Une robe somptueuse conçue avec le plus fin tissu Kente, mariant tradition et haute couture pour vos cérémonies.', 85000, 1, '["/uploads/modele_kente.jpg"]', 1, 7),
+    (33, 'Veste Moderne en Bogolan', 'Veste pour homme en authentique tissu Bogolan du Mali. Une coupe moderne pour un style élégant et culturel.', 45000, 4, '["/uploads/modele_bogolan.jpg"]', 1, 7),
+    (34, 'Parure Royale Kita Traditionnelle', 'Tenue complète de la royauté Akan en Kita prestigieux, accompagnée de ses ornements. Un chef-d''œuvre culturel.', 120000, 1, '["/uploads/modele_kita.jpg"]', 1, 7),
+    (35, 'Pagne Ankara Imprimé Floral', 'Véritable tissu Ankara aux motifs floraux vibrants. Idéal pour vos créations de mode contemporaine.', 25000, 15, '["/uploads/tissu_ankara.jpg"]', 1, 6);
 

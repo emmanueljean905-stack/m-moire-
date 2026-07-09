@@ -10,10 +10,21 @@ backend/node_modules/
 .env
 backend/.env
 
-# ── Images uploadées par les utilisateurs ───────────────────
-# (gardées localement, trop lourdes pour Git, seront sur le serveur)
 backend/uploads/*
 !backend/uploads/.gitkeep
+!backend/uploads/wax_hollandais_1.jpg
+!backend/uploads/bazin_1.jpg
+!backend/uploads/kente_1.jpg
+!backend/uploads/bogolan_1.jpg
+!backend/uploads/robe_wax_1.jpg
+!backend/uploads/ensemble_bazin_1.jpg
+!backend/uploads/produit_15_0.jpg
+!backend/uploads/pagne_kita.jpg
+!backend/uploads/modele_ankara.jpg
+!backend/uploads/modele_kente.jpg
+!backend/uploads/modele_bogolan.jpg
+!backend/uploads/modele_kita.jpg
+!backend/uploads/tissu_ankara.jpg
 
 # ── Fichiers de log ─────────────────────────────────────────
 npm-debug.log*
